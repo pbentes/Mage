@@ -24,10 +24,11 @@ target_include_directories( ${ProjectName}
     PUBLIC ${enet_SOURCE_DIR}/include
     PUBLIC ${flecs_SOURCE_DIR}/include
     PUBLIC ${raylib_BINARY_DIR}/raylib/include
+    PUBLIC ${raygui_SRC}
 )
 
 target_link_libraries(${ProjectName}
-    PUBLIC flecs
+    PUBLIC flecs_static
     PUBLIC enet
     PUBLIC raylib
 )

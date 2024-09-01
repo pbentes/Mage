@@ -19,10 +19,11 @@ add_executable(${ProjectName} ${GAME_SRC})
 add_dependencies(${ProjectName} engine)
 
 target_include_directories( ${ProjectName}
-    PUBLIC ${enet_SOURCE_DIR}/include
-    PUBLIC ${flecs_SOURCE_DIR}/include
-    PUBLIC ${raylib_BINARY_DIR}/raylib/include
-    PUBLIC ${engine_SOURCE_DIR}/src
+    PRIVATE ${enet_SOURCE_DIR}/include
+    PRIVATE ${flecs_SOURCE_DIR}/include
+    PRIVATE ${raylib_BINARY_DIR}/raylib/include
+    PRIVATE ${raygui_SRC}
+    PRIVATE ${engine_SOURCE_DIR}/src
 )
 
 target_link_libraries(${ProjectName}
