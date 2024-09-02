@@ -18,18 +18,17 @@ file(GLOB_RECURSE ENGINE_SRC
 
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
 
-add_dependencies(${ProjectName} enet flecs raylib Jolt)
+add_dependencies(${ProjectName} enet raylib Jolt)
 
 target_include_directories( ${ProjectName}
     PUBLIC ${enet_SOURCE_DIR}/include
-    PUBLIC ${flecs_SOURCE_DIR}/include
+    PUBLIC ${entt_SOURCE_DIR}/single_include/entt
     PUBLIC ${raylib_BINARY_DIR}/raylib/include
     PUBLIC ${raygui_SRC}
     PUBLIC ${JoltPhysics_SOURCE_DIR}/..
 )
 
 target_link_libraries(${ProjectName}
-    PUBLIC flecs_static
     PUBLIC enet
     PUBLIC raylib
     PUBLIC Jolt
