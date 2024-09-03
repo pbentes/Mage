@@ -2,7 +2,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
 
-#include <App/App.h>
+#include <Core/Application.h>
 
 int main() {
     Engine::Application app("Game application");
