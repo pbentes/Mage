@@ -16,6 +16,10 @@ file(GLOB_RECURSE ENGINE_SRC
     "src/*.h"
 )
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
 
 add_dependencies(${ProjectName} enet raylib Jolt)
