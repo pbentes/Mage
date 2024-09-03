@@ -1,5 +1,10 @@
-#include <iostream>
+#include <raylib.h>
+#define RAYGUI_IMPLEMENTATION
+#include <raygui.h>
+
+#include <App/App.h>
 
 int main() {
-    std::cout << "Hello world!" << std::endl;
+    Engine::Application app("Game application");
+    app.run();
 }
