@@ -11,6 +11,8 @@ namespace Engine {
         const int screenHeight = 450;
 
         InitWindow(screenWidth, screenHeight, window_title);
+
+        this->m_RenderTexture = LoadRenderTexture(GetRenderWidth(), GetRenderHeight());
     }
 
     Application::~Application() {
@@ -20,12 +22,20 @@ namespace Engine {
 
     void Application::run() {
         PROFILE_SCOPE("Run Function");
+
         while (!WindowShouldClose())
         {
             PROFILE_SCOPE("Main Loop");
-            BeginDrawing();
+            BeginTextureMode(this->m_RenderTexture);
                 ClearBackground(Color {90 , 99 , 156, 255});
-                DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            EndTextureMode();
+
+            BeginDrawing();
+                ClearBackground(MAGENTA);
+                DrawTextureRec(this->m_RenderTexture.texture, Rectangle{ 0, 0, (float)this->m_RenderTexture.texture.width, (float)-this->m_RenderTexture.texture.height }, Vector2{ 0, 0 }, WHITE);
+                // Post Processing
+                // GUI
+                DrawFPS(10, 10);
             EndDrawing();
         }
     }

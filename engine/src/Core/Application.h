@@ -1,5 +1,7 @@
 #pragma once
 
+#include <raylib.h>
+
 namespace Engine {
     class Application {
         public:
@@ -7,5 +9,7 @@ namespace Engine {
             ~Application();
 
             void run();
+        public:
+            RenderTexture2D m_RenderTexture;
     };
 }
