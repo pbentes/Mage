@@ -6,3 +6,5 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/skypjack/entt.git
 )
 FetchContent_MakeAvailable(entt)
+
+set(entt_SRC ${entt_SOURCE_DIR} PARENT_SCOPE)
