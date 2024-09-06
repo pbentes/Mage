@@ -6,9 +6,9 @@
 #include <raylib.h>
 
 namespace Engine {
-    class Renderer: public entt::process<Renderer, std::uint64_t> {
+    class Renderer: public entt::process<Renderer, std::double_t> {
         public:
-            using delta_type = std::uint64_t;
+            using delta_type = std::double_t;
 
             Renderer();
             ~Renderer();

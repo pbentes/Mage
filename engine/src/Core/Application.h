@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <raylib.h>
 #include <entt/entt.hpp>
 
@@ -13,6 +14,6 @@ namespace Engine {
 
             void run();
         public:
-            entt::basic_scheduler<std::uint64_t> m_Scheduler;
+            entt::basic_scheduler<std::double_t> m_Scheduler;
     };
 }
