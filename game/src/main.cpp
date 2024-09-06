@@ -5,6 +5,6 @@
 #include <Core/Application.h>
 
 int main() {
-    Engine::Application app("Game application");
+    Engine::Application app;
     app.run();
 }
