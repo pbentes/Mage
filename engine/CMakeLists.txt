@@ -16,26 +16,20 @@ file(GLOB_RECURSE ENGINE_SRC
     "src/*.h"
 )
 
-if(MSVC)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MTd")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MTd")
-endif()
-
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
 
-add_dependencies(${ProjectName} enet raylib Jolt)
+add_dependencies(${ProjectName} enet raylib)
 
 target_include_directories( ${ProjectName}
     PUBLIC ${enet_SOURCE_DIR}/include
     PUBLIC ${entt_SRC}/single_include
     PUBLIC ${raylib_BINARY_DIR}/raylib/include
     PUBLIC ${raygui_SRC}
-    PUBLIC ${JoltPhysics_SOURCE_DIR}/..
+    #PUBLIC ${JoltPhysics_SOURCE_DIR}/..
 )
 
 target_link_libraries(${ProjectName}
     PUBLIC enet
     PUBLIC raylib
-    PUBLIC Jolt
+    #PUBLIC Jolt
 )
