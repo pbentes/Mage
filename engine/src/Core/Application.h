@@ -1,15 +1,18 @@
 #pragma once
 
 #include <raylib.h>
+#include <entt/entt.hpp>
+
+#define ENTT_STANDARD_CPP
 
 namespace Engine {
     class Application {
         public:
-            Application(const char* window_title);
+            Application();
             ~Application();
 
             void run();
         public:
-            RenderTexture2D m_RenderTexture;
+            entt::basic_scheduler<std::uint64_t> m_Scheduler;
     };
 }
