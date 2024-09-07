@@ -1,5 +1,6 @@
 #include "Renderer.h"
-#include "raylib.h"
+
+#include <raylib.h>
 
 namespace Engine {
     Renderer::Renderer() {}
