@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+
 #include <raylib.h>
 #include <entt/entt.hpp>
 

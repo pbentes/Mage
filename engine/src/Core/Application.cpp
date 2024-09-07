@@ -2,13 +2,15 @@
 
 #include "../Debug/Instrumentor.h"
 #include "../Renderer/Renderer.h"
+#include "../Scripting/Scripting.h"
 
 #include <raylib.h>
 
 namespace Engine {
     Application::Application() {
         Instrumentor::Get().BeginSession("Engine");
-        m_Scheduler.attach<Renderer>();
+        m_Scheduler.attach<Scripting>()
+            .attach<Renderer>();
     }
 
     Application::~Application() {
@@ -20,6 +22,9 @@ namespace Engine {
         while (!m_Scheduler.empty())
         {
             m_Scheduler.update(GetFrameTime());
+
+            if (WindowShouldClose())
+                m_Scheduler.abort();
         }
     }
 }
