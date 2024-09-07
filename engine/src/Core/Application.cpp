@@ -4,13 +4,15 @@
 #include "../Renderer/Renderer.h"
 #include "../Scripting/Scripting.h"
 
+#include <memory>
 #include <raylib.h>
 
 namespace Engine {
     Application::Application() {
         Instrumentor::Get().BeginSession("Engine");
-        m_Scheduler.attach<Scripting>()
-            .attach<Renderer>();
+        m_Registry = std::shared_ptr<entt::registry>(new entt::registry());
+        m_Scheduler.attach<Scripting>(m_Registry)
+                   .attach<Renderer>(m_Registry);
     }
 
     Application::~Application() {
@@ -18,13 +20,16 @@ namespace Engine {
     }
 
     void Application::run() {
-        PROFILE_SCOPE("Run Function");
+        PROFILE_SCOPE("Application Loop");
+
         while (!m_Scheduler.empty())
         {
+            if (WindowShouldClose()) {
+                m_Scheduler.clear();
+                continue;
+            }
+            
             m_Scheduler.update(GetFrameTime());
-
-            if (WindowShouldClose())
-                m_Scheduler.abort();
         }
     }
 }

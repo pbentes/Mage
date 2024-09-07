@@ -8,7 +8,7 @@ namespace Engine {
         public:
             using delta_type = std::double_t;
 
-            Renderer();
+            Renderer(std::shared_ptr<entt::registry> registry);
             ~Renderer();
 
             void init();
@@ -16,7 +16,8 @@ namespace Engine {
             void succeeded();
             void failed();
             void aborted();
-        public:
+        private:
             RenderTexture2D m_RenderTexture;
+            std::shared_ptr<entt::registry> m_Registry;
     };
 }

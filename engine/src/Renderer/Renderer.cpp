@@ -1,9 +1,13 @@
 #include "Renderer.h"
 
+#include "../Debug/Instrumentor.h"
+
 #include <raylib.h>
 
 namespace Engine {
-    Renderer::Renderer() {}
+    Renderer::Renderer(std::shared_ptr<entt::registry> registry) {
+        this->m_Registry = registry;
+    }
     Renderer::~Renderer() {}
 
     void Renderer::init() {
@@ -18,6 +22,7 @@ namespace Engine {
     }
 
     void Renderer::update(Renderer::delta_type delta, void*) {
+        PROFILE_SCOPE("Rendering Update");
         if (IsWindowResized()) {
             UnloadRenderTexture(this->m_RenderTexture);
             this->m_RenderTexture = LoadRenderTexture(GetRenderWidth(), GetRenderHeight());

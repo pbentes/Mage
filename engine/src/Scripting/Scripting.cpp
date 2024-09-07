@@ -1,14 +1,16 @@
 #include "Scripting.h"
 
-#include <iostream>
+#include "../Debug/Instrumentor.h"
 
 namespace Engine {
-    Scripting::Scripting() {}
+    Scripting::Scripting(std::shared_ptr<entt::registry> registry) {
+        this->m_Registry = registry;
+    }
     Scripting::~Scripting(){}
 
     void Scripting::init() {}
     void Scripting::update(Scripting::delta_type delta, void*) {
-        std::cout << "Delta time: " << delta << std::endl;
+        PROFILE_SCOPE("Scripting Update");
     }
     void Scripting::succeeded() {}
     void Scripting::failed() {}

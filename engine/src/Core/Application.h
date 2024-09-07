@@ -15,6 +15,7 @@ namespace Engine {
 
             void run();
         public:
+            std::shared_ptr<entt::registry> m_Registry;
             entt::basic_scheduler<std::double_t> m_Scheduler;
     };
 }
