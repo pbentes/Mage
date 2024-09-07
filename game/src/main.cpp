@@ -1,8 +1,6 @@
-#include <raylib.h>
-#define RAYGUI_IMPLEMENTATION
-#include <raygui.h>
-
 #include <Core/Application.h>
+
+#include <raylib.h>
 
 int main() {
     Engine::Application app;
