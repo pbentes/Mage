@@ -28,3 +28,5 @@ target_include_directories(lua
 
 set(CMAKE_DEBUG_POSTFIX "")
 add_subdirectory(${lua_SOURCE_DIR})
+
+set(lua_SOURCE_DIR ${lua_SOURCE_DIR} PARENT_SCOPE)
