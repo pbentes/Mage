@@ -2,3 +2,4 @@
 .vs
 build
 vendor/lua/
+assets
