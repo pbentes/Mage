@@ -1,6 +1,8 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <sol/sol.hpp>
+
 #include <memory>
 
 namespace Engine {
@@ -17,6 +19,7 @@ namespace Engine {
             void failed();
             void aborted();
         private:
+            sol::state m_Lua;
             std::shared_ptr<entt::registry> m_Registry;
     };
 
