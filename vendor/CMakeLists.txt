@@ -8,3 +8,6 @@ include(entt.cmake)
 include(lua.cmake)
 include(sol2.cmake)
 #include(jolt.cmake)
+include(efsw.cmake)
+
+add_subdirectory(sqlite3)
