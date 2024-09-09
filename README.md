@@ -1,4 +1,4 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/pbentes/peacock/badge/main)](https://www.codefactor.io/repository/github/pbentes/peacock/overview/main)
+[![CodeFactor](https://www.codefactor.io/repository/github/pbentes/mage/badge)](https://www.codefactor.io/repository/github/pbentes/mage)
 
 # Mage
 
