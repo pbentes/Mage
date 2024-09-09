@@ -36,6 +36,8 @@ namespace Engine {
             void ResetScans();
             void Cleanup();
             void ScanFolder(std::string folderPath);
+
+            void ExecuteStatement(const char* sql);
             
             
         private:

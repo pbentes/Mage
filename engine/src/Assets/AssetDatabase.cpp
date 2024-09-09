@@ -317,25 +317,8 @@ namespace Engine {
         }
 
         // Delete the files not scanned
-        int rc;
-
         const char* sql = "UPDATE assets SET DELETED = TRUE WHERE SCANNED = FALSE;";
-
-        sqlite3_stmt* stmt;
-        rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
-        if (rc != SQLITE_OK) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
-        }
-
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            sqlite3_finalize(stmt);
-            abort();
-        } 
-
-        sqlite3_finalize(stmt);
+        this->ExecuteStatement(sql);
 
         // Set scanned to false on all files
         this->ResetScans();
@@ -343,10 +326,12 @@ namespace Engine {
     }
 
     void AssetDatabase::ResetScans() {
-        int rc;
-
         const char* sql = "UPDATE assets SET SCANNED = FALSE WHERE SCANNED = TRUE;";
+        this->ExecuteStatement(sql);
+    }
 
+    void AssetDatabase::ExecuteStatement(const char* sql) {
+        int rc;
         sqlite3_stmt* stmt;
         rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
         if (rc != SQLITE_OK) {
