@@ -1,4 +1,4 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/pbentes/mage/badge)](https://www.codefactor.io/repository/github/pbentes/mage)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/pbentes/Mage)
 
 # Mage
 
