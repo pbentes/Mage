@@ -22,7 +22,6 @@ namespace Engine {
             void Debug(const std::string message);
             void Info(const std::string message);
         private:
-
             Logger();
             ~Logger();
             void Log(const std::string message, const std::string mode);
