@@ -3,4 +3,20 @@
 
 # Mage
 
-Mage is a game engine built from the ground up to create entirely modable games.
+Mage is a game engine built from the ground up to create entirely modable games. To achieve this goal, the editor will be embeded in the game runtime, allowing anyone with a copy of the game to create mods using the same tools used to create the game in the first place.
+
+## Building
+
+### Windows
+
+To build the project on windows using Visual Studio is recommended. Just run:
+
+```ps1
+git clone https://github.com/pbentes/Mage.git
+cd Mage
+mkdir build
+cd build
+cmake ..
+```
+
+On windows this should create a Visual Studio solution in the build folder you can use to build the project by setting the "game" project as the default project and pressing f5.
