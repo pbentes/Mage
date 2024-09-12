@@ -48,6 +48,7 @@ namespace Engine {
             operator uint32_t () const { return (uint32_t)m_EntityHandle; }
             operator entt::entity () const { return m_EntityHandle; }
             operator bool () const;
+
         private:
             entt::entity m_EntityHandle { entt::null };
             Scene* m_Scene = nullptr;
