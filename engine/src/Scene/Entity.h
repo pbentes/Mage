@@ -44,7 +44,6 @@ namespace Engine {
             const std::string& Name() const { return HasComponent<TagComponent>() ? GetComponent<TagComponent>().tag : DefaultName; }
             bool IsValid() const;
 
-
             operator uint32_t () const { return (uint32_t)m_EntityHandle; }
             operator entt::entity () const { return m_EntityHandle; }
             operator bool () const;
