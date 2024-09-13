@@ -5,7 +5,9 @@
 #include "../Components/Tag.h"
 #include "../Components/Transform.h"
 #include "../Components/UUID.h"
+#include "Entity.h"
 
+#include <cstddef>
 #include <cstdint>
 
 namespace Engine {
@@ -37,9 +39,15 @@ namespace Engine {
 			entity.AddComponent<TagComponent>(name);
 
         auto& node = entity.AddComponent<NodeComponent>();
-        if (parent)
+        if (parent) {
+            // Add new node to the scene tree
             node.parent = parent;
-
+            NodeComponent& parentNode = parent.GetComponent<NodeComponent>();
+            parentNode.children++;
+            node.next = parentNode.first;
+            parentNode.first = entity;
+        }
+        
         auto& idComponent = entity.AddComponent<UUIDComponent>();
 
         m_EntityMap[idComponent.id] = entity;
@@ -63,9 +71,28 @@ namespace Engine {
         if (!entity)
 			return;
 
-        if (!excludeChildren) {
+        NodeComponent& node = entity.GetComponent<NodeComponent>();
 
+        if (!excludeChildren) {
+            // Recursively delete all children
+            for (size_t i = 0; i < node.children; i++) {
+                Entity childToDestroy = node.first;
+                node.first = childToDestroy.GetComponent<NodeComponent>().next;
+                DestroyEntity(childToDestroy, excludeChildren, false);
+            }
+        } else {
+            // Reparent all children
+            Entity currentChild = node.first;
+            for (size_t i = 0; i < node.children; i++) {
+                NodeComponent currentChildNode = currentChild.GetComponent<NodeComponent>();
+
+                currentChildNode.parent = node.parent;
+                node.parent.GetComponent<NodeComponent>().children++;
+                currentChild = currentChildNode.next;
+            }
         }
+
+        // TODO: Call OnDestroy on the behaviours here
 
         UUID64 id = entity.GetUUID();
 
