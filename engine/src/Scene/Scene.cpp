@@ -41,11 +41,11 @@ namespace Engine {
         auto& node = entity.AddComponent<NodeComponent>();
         if (parent) {
             // Add new node to the scene tree
-            node.parent = parent;
+            node.parent = &parent;
             NodeComponent& parentNode = parent.GetComponent<NodeComponent>();
             parentNode.children++;
             node.next = parentNode.first;
-            parentNode.first = entity;
+            parentNode.first = &entity;
         }
         
         auto& idComponent = entity.AddComponent<UUIDComponent>();
@@ -76,18 +76,18 @@ namespace Engine {
         if (!excludeChildren) {
             // Recursively delete all children
             for (size_t i = 0; i < node.children; i++) {
-                Entity childToDestroy = node.first;
-                node.first = childToDestroy.GetComponent<NodeComponent>().next;
-                DestroyEntity(childToDestroy, excludeChildren, false);
+                Entity* childToDestroy = node.first;
+                node.first = childToDestroy->GetComponent<NodeComponent>().next;
+                DestroyEntity(*childToDestroy, excludeChildren, false);
             }
         } else {
             // Reparent all children
-            Entity currentChild = node.first;
+            Entity* currentChild = node.first;
             for (size_t i = 0; i < node.children; i++) {
-                NodeComponent currentChildNode = currentChild.GetComponent<NodeComponent>();
+                NodeComponent currentChildNode = currentChild->GetComponent<NodeComponent>();
 
                 currentChildNode.parent = node.parent;
-                node.parent.GetComponent<NodeComponent>().children++;
+                node.parent->GetComponent<NodeComponent>().children++;
                 currentChild = currentChildNode.next;
             }
         }

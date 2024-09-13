@@ -7,9 +7,9 @@
 namespace Engine {
     typedef struct NodeComponent {
         std::size_t children{};
-        Entity first {};
-        Entity prev {};
-        Entity next {};
-        Entity parent {};
+        Entity* first {};
+        Entity* prev {};
+        Entity* next {};
+        Entity* parent {};
     } NodeComponent;
 }
