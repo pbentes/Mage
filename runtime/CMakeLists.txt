@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(ProjectName "game")
+set(ProjectName "runtime")
 project(${ProjectName})
 
 set(CMAKE_DEBUG_POSTFIX "")
@@ -9,12 +9,12 @@ link_directories(
     ${engine_BINARY_DIR}
 )
 
-file(GLOB_RECURSE GAME_SRC
+file(GLOB_RECURSE RUNTIME_SRC
     "src/*.cpp"
     "src/*.h"
 )
 
-add_executable(${ProjectName} ${GAME_SRC})
+add_executable(${ProjectName} ${RUNTIME_SRC})
 
 add_dependencies(${ProjectName} engine)
 

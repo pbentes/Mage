@@ -7,4 +7,4 @@ add_subdirectory("vendor")
 
 set(CMAKE_FOLDER /)
 add_subdirectory("engine")
-add_subdirectory("game")
+add_subdirectory("runtime")
