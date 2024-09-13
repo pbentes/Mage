@@ -31,6 +31,7 @@ namespace Engine {
             entt::entity m_SceneEntity = entt::null;
             entt::registry m_Registry;
             std::unordered_map<uint64_t, Entity> m_EntityMap;
+            
         private:
             UUID64 m_SceneID;
             std::vector<std::function<void()>> m_PostUpdateQueue;
