@@ -1,16 +1,12 @@
 #pragma once
 
-#ifndef DllExport
-#define DllExport __declspec( dllexport )
-#endif
-
 #include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace Engine {
-    class DllExport Asset {
+    class Asset {
         public:
             Asset(size_t id, std::string path, std::string directory, std::string extension, bool deleted);
             ~Asset() = default;

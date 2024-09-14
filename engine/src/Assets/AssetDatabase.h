@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef DllExport
-#define DllExport __declspec( dllexport )
-#endif
-
 #include <efsw/efsw.hpp>
 #include <sqlite3.h>
 
@@ -16,7 +12,7 @@
 #include "Asset.h"
 
 namespace Engine {
-    class DllExport AssetDatabase : public efsw::FileWatchListener {
+    class AssetDatabase : public efsw::FileWatchListener {
         public:
             AssetDatabase(std::string directory);
             ~AssetDatabase();
