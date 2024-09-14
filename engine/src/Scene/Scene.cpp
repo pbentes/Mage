@@ -9,6 +9,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 namespace Engine {
     std::unordered_map<uint64_t, Scene*> s_ActiveScenes;
@@ -41,11 +42,11 @@ namespace Engine {
         auto& node = entity.AddComponent<NodeComponent>();
         if (parent) {
             // Add new node to the scene tree
-            node.parent = &parent;
+            node.parent = std::make_shared<Entity>(parent);
             NodeComponent& parentNode = parent.GetComponent<NodeComponent>();
             parentNode.children++;
             node.next = parentNode.first;
-            parentNode.first = &entity;
+            parentNode.first = std::make_shared<Entity>(entity);
         }
         
         auto& idComponent = entity.AddComponent<UUIDComponent>();
@@ -76,13 +77,13 @@ namespace Engine {
         if (!excludeChildren) {
             // Recursively delete all children
             for (size_t i = 0; i < node.children; i++) {
-                Entity* childToDestroy = node.first;
+                std::shared_ptr<Entity> childToDestroy = node.first;
                 node.first = childToDestroy->GetComponent<NodeComponent>().next;
                 DestroyEntity(*childToDestroy, excludeChildren, false);
             }
         } else {
             // Reparent all children
-            Entity* currentChild = node.first;
+            std::shared_ptr<Entity> currentChild = node.first;
             for (size_t i = 0; i < node.children; i++) {
                 NodeComponent currentChildNode = currentChild->GetComponent<NodeComponent>();
 
@@ -98,5 +99,6 @@ namespace Engine {
 
         m_Registry.destroy(entity);
         m_EntityMap.erase(id);
+        node.parent->GetComponent<NodeComponent>().children--;
     }
 }
