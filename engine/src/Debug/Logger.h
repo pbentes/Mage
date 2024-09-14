@@ -30,6 +30,7 @@ namespace Engine {
             Logger();
             ~Logger();
             void Log(const std::string message, const std::string mode);
+            
         private:
             std::ofstream m_OutputStream;
     };
