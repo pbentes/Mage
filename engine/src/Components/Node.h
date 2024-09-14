@@ -6,10 +6,10 @@
 
 namespace Engine {
     typedef struct NodeComponent {
-        std::size_t children{};
-        Entity* first {};
-        Entity* prev {};
-        Entity* next {};
-        Entity* parent {};
+        std::size_t children {};
+        std::shared_ptr<Entity> first {};
+        std::shared_ptr<Entity> prev {};
+        std::shared_ptr<Entity> next {};
+        std::shared_ptr<Entity> parent {};
     } NodeComponent;
 }
