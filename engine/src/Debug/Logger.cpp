@@ -43,4 +43,12 @@ namespace Engine {
         std::cout            << log << std::endl;
         this->m_OutputStream.flush(); 
     }
+
+    template<typename... Args>
+    void Logger::Assert(bool condition, std::string prefix, std::format_string<Args...> message, Args&&... args) {
+        if (!condition) {
+            auto formatted = std::format(message, std::forward<Args>(args)...);
+            ERROR(std::format("{0}: {1}", prefix, formatted));
+        }
+    }
 }
