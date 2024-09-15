@@ -14,9 +14,10 @@ To build the project on windows using Visual Studio is recommended. Just run:
 ```ps1
 git clone https://github.com/pbentes/Mage.git
 cd Mage
-mkdir build
-cd build
-cmake ..
+cmake -S . -B build
+cmake --build build
 ```
 
-On windows this should create a Visual Studio solution in the build folder you can use to build the project by setting the "game" project as the default project and pressing f5.
+On windows this should create a Visual Studio solution in the build folder you can use to build the project.
+
+I personally use Ninja so I use `cmake -S . -B build -G Ninja` instead.
