@@ -21,7 +21,7 @@ file(GLOB_RECURSE ENGINE_SRC
 
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
 
-add_dependencies(${ProjectName} enet raylib lua)
+add_dependencies(${ProjectName} enet raylib lua Jolt)
 
 target_include_directories( ${ProjectName}
     PUBLIC ${enet_SOURCE_DIR}/include
@@ -32,7 +32,7 @@ target_include_directories( ${ProjectName}
     PUBLIC ${sol2_SOURCE_DIR}/include
     PUBLIC ${efsw_SOURCE_DIR}/include
     PUBLIC ${sqlite3_SOURCE_DIR}
-    #PUBLIC ${JoltPhysics_SOURCE_DIR}/..
+    PUBLIC ${JoltPhysics_SOURCE_DIR}/..
 )
 
 target_link_libraries(${ProjectName}
@@ -41,5 +41,5 @@ target_link_libraries(${ProjectName}
     PUBLIC lua
     PUBLIC efsw
     PUBLIC sqlite3
-    #PUBLIC Jolt
+    PUBLIC Jolt
 )

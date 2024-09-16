@@ -37,6 +37,11 @@ set(USE_TZCNT ON)
 set(USE_F16C ON)
 set(USE_FMADD ON)
 
+if (MSVC)
+	# Set runtime library
+	set(USE_STATIC_MSVC_RUNTIME_LIBRARY OFF)
+endif()
+
 # Include Jolt
 FetchContent_Declare(
         JoltPhysics
@@ -49,13 +54,6 @@ FetchContent_MakeAvailable(JoltPhysics)
 if (MSVC)
 	# 64 bit architecture
 	set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
-
-	# Set runtime library
-	if (USE_STATIC_MSVC_RUNTIME_LIBRARY)
-		set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-	else()
-		set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-	endif()
 
 	# Set general compiler flags
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus /Gm- /Wall /WX /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline")

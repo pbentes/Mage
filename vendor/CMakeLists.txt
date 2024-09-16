@@ -7,9 +7,7 @@ include(enet.cmake)
 include(entt.cmake)
 include(lua.cmake)
 include(sol2.cmake)
-#include(jolt.cmake)
 include(efsw.cmake)
-
 add_subdirectory(sqlite3)
-
 include(google_test.cmake)
+include(jolt.cmake)
