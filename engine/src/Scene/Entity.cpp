@@ -36,14 +36,14 @@ namespace Engine {
         return children;
     }
 
-    void Entity::RemoveChild(std::shared_ptr<Entity> child) {
-
-    }
+    //void Entity::RemoveChild(std::shared_ptr<Entity> child) {
+    //
+    //}
 
     void Entity::MoveNode(std::shared_ptr<Entity> parent, std::shared_ptr<Entity> previousSibling) {
         NodeComponent thisNodeComponent = GetComponent<NodeComponent>();
         if (IsDescendentOf(parent) != 1) {
-
+            return;
         }
     }
 
