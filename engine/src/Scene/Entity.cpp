@@ -1,57 +1,55 @@
 #include "Entity.h"
+
+#include "../Components/Node.h"
 #include "Scene.h"
+#include <cstddef>
+#include <memory>
 
 namespace Engine {
-    template<typename T, typename... Args>
-	T& Entity::AddComponent(Args&&... args) {
-        return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-    }
-
-    template<typename T>
-	T& Entity::GetComponent() {
-        return m_Scene->m_Registry.get<T>(m_EntityHandle);
-    }
-
-    template<typename T>
-	const T& Entity::GetComponent() const {
-        return m_Scene->m_Registry.get<T>(m_EntityHandle);
-    }
-
-    template<typename... T>
-    bool Entity::HasComponent() {
-        return m_Scene->m_Registry.all_of<T...>(m_EntityHandle);
-    }
-
-    template<typename... T>
-    bool Entity::HasComponent() const {
-        return m_Scene->m_Registry.all_of<T...>(m_EntityHandle);
-    }
-
-    template<typename...T>
-    bool Entity::HasAny() {
-        return m_Scene->m_Registry.any_of<T...>(m_EntityHandle);
-    }
-
-    template<typename...T>
-    bool Entity::HasAny() const {
-        return m_Scene->m_Registry.any_of<T...>(m_EntityHandle);
-    }
-
-    template<typename T>
-    void Entity::RemoveComponent() {
-        m_Scene->m_Registry.remove<T>(m_EntityHandle);
-    }
-
-    template<typename T>
-    void Entity::RemoveComponentIfExists() {
-        if (!HasComponent<T>())
-            return;
-        m_Scene->m_Registry.remove<T>(m_EntityHandle);
-    }
-
     bool Entity::IsValid() const { 
         return (m_EntityHandle != entt::null) && m_Scene && m_Scene->m_Registry.valid(m_EntityHandle); 
     }
+    
+    std::shared_ptr<Entity> Entity::GetParent() {
+        if(auto parent = GetComponent<NodeComponent>().parent.lock()) {
+            return parent;
+        }
+        return NULL;
+    }
+
+    std::vector<std::shared_ptr<Entity>> Entity::GetChildren() {
+        std::vector<std::shared_ptr<Entity>> children;
+        NodeComponent selfNode = this->GetComponent<NodeComponent>();
+
+        if (selfNode.children == 0)
+            return children;
+        
+        std::shared_ptr<Entity> currentEntity = selfNode.first.lock();
+        NodeComponent currentChildNode = selfNode.first.lock()->GetComponent<NodeComponent>();
+        while (currentChildNode.next.lock()) {
+            children.push_back(currentEntity);
+
+            currentEntity = currentChildNode.next.lock();
+            currentChildNode = currentEntity->GetComponent<NodeComponent>();
+        }
+
+        return children;
+    }
+
+    void Entity::RemoveChild(std::shared_ptr<Entity> child) {
+
+    }
+
+    void Entity::MoveNode(std::shared_ptr<Entity> parent, std::shared_ptr<Entity> previousSibling) {
+        NodeComponent thisNodeComponent = GetComponent<NodeComponent>();
+        if (IsDescendentOf(parent) != 1) {
+
+        }
+    }
+
+    int Entity::IsAncestorOf(std::shared_ptr<Entity> node) { return false; }
+
+    int Entity::IsDescendentOf(std::shared_ptr<Entity> node) { return true; }
     
 	Entity::operator bool() const { 
         return IsValid(); 

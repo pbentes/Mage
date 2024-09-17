@@ -4,6 +4,8 @@
 #include "../Components/UUID.h"
 
 #include <entt/entt.hpp>
+#include <memory>
+#include <vector>
 
 namespace Engine {
     class Scene;
@@ -44,13 +46,22 @@ namespace Engine {
             std::string& Name() { return HasComponent<TagComponent>() ? GetComponent<TagComponent>().tag : DefaultName; }
             const std::string& Name() const { return HasComponent<TagComponent>() ? GetComponent<TagComponent>().tag : DefaultName; }
             bool IsValid() const;
-
             UUID64 GetUUID() const { return GetComponent<UUIDComponent>().id; }
 
+            // Node API
+            std::shared_ptr<Entity> GetParent();
+            std::vector<std::shared_ptr<Entity>> GetChildren();
+            void RemoveChild(std::shared_ptr<Entity> child);
+            void MoveNode(std::shared_ptr<Entity> parent, std::shared_ptr<Entity> previousSibling = {});
+            int IsAncestorOf(std::shared_ptr<Entity> node);
+            int IsDescendentOf(std::shared_ptr<Entity> node);
+
+            // Operators
             operator uint32_t () const { return (uint32_t)m_EntityHandle; }
             operator entt::entity () const { return m_EntityHandle; }
+            operator UUID64 () const { return GetUUID(); };
             operator bool () const;
-
+            
         private:
             entt::entity m_EntityHandle { entt::null };
             Scene* m_Scene = nullptr;
