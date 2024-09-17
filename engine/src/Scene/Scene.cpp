@@ -1,11 +1,13 @@
 #include "Scene.h"
 
-#include "../Components/Node.h"
-#include "../Components/SceneComponent.h"
-#include "../Components/Tag.h"
-#include "../Components/Transform.h"
-#include "../Components/UUID.h"
+#include <Components/UUID.h>
+#include <Components/Transform.h>
+#include <Components/Tag.h>
+#include <Components/Node.h>
+#include <Components/SceneComponent.h>
+
 #include "Entity.h"
+#include "EntityTemplates.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -77,19 +79,19 @@ namespace Engine {
         if (!excludeChildren) {
             // Recursively delete all children
             for (size_t i = 0; i < node.children; i++) {
-                std::shared_ptr<Entity> childToDestroy = node.first;
+                std::shared_ptr<Entity> childToDestroy = node.first.lock();
                 node.first = childToDestroy->GetComponent<NodeComponent>().next;
                 DestroyEntity(*childToDestroy, excludeChildren, false);
             }
         } else {
             // Reparent all children
-            std::shared_ptr<Entity> currentChild = node.first;
+            std::shared_ptr<Entity> currentChild = node.first.lock();
             for (size_t i = 0; i < node.children; i++) {
                 NodeComponent currentChildNode = currentChild->GetComponent<NodeComponent>();
 
                 currentChildNode.parent = node.parent;
-                node.parent->GetComponent<NodeComponent>().children++;
-                currentChild = currentChildNode.next;
+                node.parent.lock()->GetComponent<NodeComponent>().children++;
+                currentChild = currentChildNode.next.lock();
             }
         }
 
@@ -99,6 +101,6 @@ namespace Engine {
 
         m_Registry.destroy(entity);
         m_EntityMap.erase(id);
-        node.parent->GetComponent<NodeComponent>().children--;
+        node.parent.lock()->GetComponent<NodeComponent>().children--;
     }
 }
