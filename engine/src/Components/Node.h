@@ -3,13 +3,15 @@
 #include "../Scene/Entity.h"
 
 #include <entt/entt.hpp>
+#include <memory>
 
 namespace Engine {
     typedef struct NodeComponent {
+        std::shared_ptr<Entity> self;
         std::size_t children {};
-        std::shared_ptr<Entity> first {};
-        std::shared_ptr<Entity> prev {};
-        std::shared_ptr<Entity> next {};
-        std::shared_ptr<Entity> parent {};
+        std::weak_ptr<Entity> first {};
+        std::weak_ptr<Entity> prev {};
+        std::weak_ptr<Entity> next {};
+        std::weak_ptr<Entity> parent {};
     } NodeComponent;
 }
