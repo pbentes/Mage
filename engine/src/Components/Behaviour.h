@@ -1,29 +1,34 @@
 #pragma once
 
+#include "sol/types.hpp"
 #include <sol/sol.hpp>
 
 namespace Engine {
-    typedef struct BehaviourComponent {
+    typedef struct Behaviour {
         sol::table self;
         struct {
             // Gameplay hooks
-            sol::function start;
-            sol::function on_destroy;
-            sol::function update;
-            sol::function late_update;
+            sol::function start { sol::nil };
+            sol::function on_destroy { sol::nil };
+            sol::function update { sol::nil };
+            sol::function late_update { sol::nil };
 
             // Physics hooks
-            sol::function fixed_update;       // TODO: implement upon physics implementation
-            sol::function on_trigger_enter;   // TODO: implement upon physics implementation
-            sol::function on_trigger_stay;    // TODO: implement upon physics implementation
-            sol::function on_trigger_exit;    // TODO: implement upon physics implementation
-            sol::function on_collision_enter; // TODO: implement upon physics implementation
-            sol::function on_collision_stay;  // TODO: implement upon physics implementation
-            sol::function on_collision_exit;  // TODO: implement upon physics implementation
+            sol::function fixed_update { sol::nil };       // TODO: implement upon physics implementation
+            sol::function on_trigger_enter { sol::nil };   // TODO: implement upon physics implementation
+            sol::function on_trigger_stay { sol::nil };    // TODO: implement upon physics implementation
+            sol::function on_trigger_exit { sol::nil };    // TODO: implement upon physics implementation
+            sol::function on_collision_enter { sol::nil }; // TODO: implement upon physics implementation
+            sol::function on_collision_stay { sol::nil };  // TODO: implement upon physics implementation
+            sol::function on_collision_exit { sol::nil };  // TODO: implement upon physics implementation
 
             // Rendering hooks
-            sol::function on_draw_gizmos;
-            sol::function on_gui;
+            sol::function on_draw_gizmos { sol::nil };
+            sol::function on_gui { sol::nil };
         } hooks;
-    } BehaviourComponent;
+    } Behaviour;
+
+    typedef struct BehaviourListComponent {
+        std::vector<Behaviour> behaviours;
+    } BehaviourListComponent;
 }
