@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Entity.h"
-#include "Scene/Scene.h"
+
+#include <Scene/Scene.h>
 
 namespace Engine {
     template<typename T, typename... Args>
