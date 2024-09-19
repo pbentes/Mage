@@ -7,4 +7,6 @@
 #include <Components/SceneComponent.h>
 
 namespace Engine {
+    Scene::Scene(const std::string& name, bool initalize) {}
+    Scene::~Scene(){}
 }

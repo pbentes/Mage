@@ -11,7 +11,7 @@
 namespace EngineTests {
     TEST(Scene, CreateNewScene) {
         // Arrange
-        Engine::Scene scene("test scene", false, false);
+        Engine::Scene scene("test scene", false);
 
         EXPECT_STRNE("hello", "world");
         EXPECT_EQ(7 * 6, 42);
