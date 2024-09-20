@@ -11,7 +11,7 @@ namespace Engine {
 	static std::uniform_int_distribution<uint32_t> s_UniformDistribution32;
 
     UUID64::UUID64()
-		: m_UUID(s_UniformDistribution32(eng64))
+		: m_UUID(s_UniformDistribution(eng64))
 	{
 	}
 
