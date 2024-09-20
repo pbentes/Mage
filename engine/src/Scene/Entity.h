@@ -13,8 +13,7 @@ namespace Engine {
 
     class Entity {
         public:
-            Entity() = default;
-            Entity(entt::entity handle, std::weak_ptr<Scene> scene): m_EntityHandle(handle), m_Scene(scene) {}
+            Entity(std::weak_ptr<Scene> scene): m_Scene(scene) {}
             ~Entity() = default;
             
             template<typename T, typename... Args>
