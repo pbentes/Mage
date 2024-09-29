@@ -7,5 +7,3 @@ FetchContent_Declare(
     GIT_TAG "develop"
 )
 FetchContent_MakeAvailable(sol2)
-
-#set(sol2_SOURCE_DIR ${sol2_SOURCE_DIR} PARENT_SCOPE)
