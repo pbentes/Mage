@@ -24,14 +24,6 @@ namespace Engine {
             // Create a new entity within the scene tree
             std::shared_ptr<Entity> CreateEntity(std::shared_ptr<Entity> parent, const std::string& name = "");
 
-            // Create a new root entity with the components passed in the template
-            template<typename... Components>
-            std::shared_ptr<Entity> CreateEntity(const std::string& name = "", const Components&... components);
-
-            // Create a new entity within the scene tree with the components passed in the template
-            template<typename... Components>
-            std::shared_ptr<Entity> CreateEntity(std::shared_ptr<Entity> parent, const std::string& name = "", const Components&... components);
-
             // Move an entity in the scene tree to a certain index of the children list of the parent
             void MoveEntity(Entity entity, Entity parent, int index);
 
