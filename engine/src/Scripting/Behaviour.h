@@ -28,8 +28,10 @@ namespace Engine {
             // Rendering Hooks
             void on_draw_gizmos();
             void on_gui();
-        private:
+        public:
             sol::table self;
+            std::string script_path;
+        private:
             struct {
                 // Lifecycle Hooks
                 sol::function start { sol::nil };
