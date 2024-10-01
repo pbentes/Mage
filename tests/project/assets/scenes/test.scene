@@ -1,7 +1,7 @@
 # I still need to add
 
 name = "test"
-uuid = "C380 39DB D263 FEE1"
+uuid = "C38039DBD263FEE1"
 type = "" # "prefab", "editor" or "level"
 
 [entities.4526E2D027E0D57A]
