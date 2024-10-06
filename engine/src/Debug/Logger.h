@@ -9,23 +9,23 @@
 
 #define LOGGER_OUTPUT_COUT
 
-#define LOGGER_OUTPUT_ERRORS
-#define LOGGER_OUTPUT_DEBUG
-#define LOGGER_OUTPUT_INFO
+//#define DO_NOT_OUTPUT_ERRORS
+//#define DO_NOT_OUTPUT_DEBUG
+//#define DO_NOT_OUTPUT_INFO
 
-#ifdef LOGGER_OUTPUT_ERRORS
+#ifndef DO_NOT_OUTPUT_ERRORS
     #define ERROR(...) ::Engine::Logger::GetInstance().Error(__VA_ARGS__)
 #else 
     #define ERROR(...)
 #endif
 
-#ifdef LOGGER_OUTPUT_DEBUG
+#ifndef DO_NOT_OUTPUT_DEBUG
     #define DEBUG(...) ::Engine::Logger::GetInstance().Debug(__VA_ARGS__)
 #else
     #define DEBUG(...)
 #endif
 
-#ifdef LOGGER_OUTPUT_INFO
+#ifndef DO_NOT_OUTPUT_INFO
     #define INFO(...)  ::Engine::Logger::GetInstance().Info(__VA_ARGS__)
 #else
     #define INFO(...)
