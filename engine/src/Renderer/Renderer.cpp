@@ -5,10 +5,6 @@
 #include <raylib.h>
 
 namespace Engine {
-    Renderer::Renderer(std::shared_ptr<entt::registry> registry) {
-        this->m_Registry = registry;
-    }
-    Renderer::~Renderer() {}
 
     void Renderer::init() {
         const int screenWidth = 800;
@@ -21,7 +17,7 @@ namespace Engine {
         this->m_RenderTexture = LoadRenderTexture(GetRenderWidth(), GetRenderHeight());
     }
 
-    void Renderer::update(Renderer::delta_type delta, void*) {
+    void Renderer::update(float delta) {
         PROFILE_SCOPE("Rendering Update");
         if (IsWindowResized()) {
             UnloadRenderTexture(this->m_RenderTexture);
@@ -42,9 +38,6 @@ namespace Engine {
             // GUI
             
         EndDrawing();
-
-        if (WindowShouldClose())
-            succeed();
     }
 
     void Renderer::succeeded() { CloseWindow(); }

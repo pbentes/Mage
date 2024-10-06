@@ -4,8 +4,6 @@
 
 #include <Core/UUID.h>
 
-#include <entt/entt.hpp>
-
 #include <functional>
 #include <memory>
 
@@ -49,7 +47,6 @@ namespace Engine {
             operator UUID64 () const { return GetUUID(); };
             
         public:
-            entt::registry m_Registry;
             std::vector<std::shared_ptr<Entity>> m_RootNodes;
 
         private:

@@ -9,18 +9,19 @@
 namespace Engine {
     Application::Application() {
         Instrumentor::Get().BeginSession("Engine");
-        m_Registry = std::shared_ptr<entt::registry>(new entt::registry());
-        m_Scheduler.attach<Renderer>(m_Registry);
     }
 
     Application::~Application() {}
 
     void Application::run() {
         PROFILE_SCOPE("Application Loop");
+        Renderer render;
 
-        while (WindowShouldClose())
+        render.init();
+
+        while (!WindowShouldClose())
         {
-            m_Scheduler.update(GetFrameTime());
+            render.update(GetFrameTime());
         }
     }
 }
