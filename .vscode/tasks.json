@@ -26,6 +26,15 @@
                 "build",
             ],
             "group": "build",
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "${cwd}\\build\\runtime\\runtime.exe",
+            "args": [
+                "${cwd}\\tests\\project",
+            ],
+            "group": "none",
         }
     ]
 }
