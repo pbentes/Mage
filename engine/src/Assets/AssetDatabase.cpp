@@ -6,12 +6,9 @@
 #include <efsw/efsw.hpp>
 #include <sqlite3.h>
 
-#include <cstdarg>
 #include <cstddef>
 #include <cstring>
 #include <filesystem>
-#include <iostream>
-#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
