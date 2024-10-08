@@ -13,6 +13,7 @@ namespace Engine {
 
             void LoadAssetSync();
             void LoadAssetAsync();
+            void StreamAsset(size_t startByte, size_t endByte);
             void UnloadAsset();
 
             std::string ToString() const;
