@@ -3,3 +3,8 @@
 build
 vendor/lua/
 /project
+
+# Program generated
+asset.db
+engine.log
+results.json
