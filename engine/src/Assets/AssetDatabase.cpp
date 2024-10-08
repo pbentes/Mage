@@ -148,18 +148,14 @@ namespace Engine {
         switch ( action ) {
             case efsw::Actions::Add:
                 InsertAsset(full_path);
-                DEBUG("ACTION: (Add) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Delete:
                 DeleteAsset(dir, filename);
-                DEBUG("ACTION: (Delete) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Modified:
-                DEBUG("ACTION: (Modified) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Moved:
                 UpdateAsset(full_path, old_full_path);
-                DEBUG("ACTION: (Moved) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             default:
                 ERROR("Asset Database: ", "Reached the default");
