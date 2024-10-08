@@ -4,18 +4,32 @@
 
 target:
 {
-  exe:               "../../../Desktop/Mage/build/tests/tests.exe"
+  exe:               "build/tests/tests.exe"
   arguments:         ""
-  working_directory: "../../../Desktop/Mage/build/tests"
+  working_directory: "build/tests"
   active:            0
 }
 
 target:
 {
-  exe:               "../../../Desktop/Mage/build/runtime/runtime.exe"
+  exe:               "build/runtime/runtime.exe"
   arguments:         ""
-  working_directory: "../../../Desktop/Mage/build/runtime"
-  active:            0
+  working_directory: "../Mage"
+  active:            1
+}
+
+/// breakpoints ///////////////////////////////////////////////////////////////
+
+breakpoint:
+{
+  line: ("engine/src/Assets/AssetDatabase.cpp":146)
+  enabled: 1
+}
+
+breakpoint:
+{
+  line: ("engine/src/Assets/AssetDatabase.cpp":118)
+  enabled: 1
 }
 
 /// exception code filters ////////////////////////////////////////////////////
