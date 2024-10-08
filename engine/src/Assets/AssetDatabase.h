@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 
 #include <cstddef>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -14,33 +15,40 @@
 namespace Engine {
     class AssetDatabase : public efsw::FileWatchListener {
         public:
-            AssetDatabase(std::string directory);
+            AssetDatabase(std::vector<std::string> directories);
             ~AssetDatabase();
 
             void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override;
             
-            std::vector<size_t> SelectAssets(std::string query, size_t argc, ...);
-            std::shared_ptr<Asset> GetAssetByID(size_t id);
-            std::string GetWatchedDirectory();
-            
+            // <WatchedFolderName>://path/to/file.txt
+            std::shared_ptr<Asset> GetAsset(std::string resourcePath);
 
         private:
             friend int callback(void* NotUsed, int argc, char** argv, char** azColName);
-            void InsertAsset(std::string directory, std::string filename);
-            void UpdateAsset(std::string directory, std::string filename, std::string old_filename);
-            void DeleteAsset(std::string directory, std::string filename);
-            void ResetScans();
-            void Cleanup();
-            void ScanFolder(std::string folderPath);
-
-            void ExecuteStatement(const char* sql);
             
+            // Inserts a new asset into the database. If the asset already exists but is marked for deletion it unmarks said asset.
+            void InsertAsset(std::filesystem::path full_path);
+            void UpdateAsset(std::filesystem::path full_path, std::filesystem::path old_full_path);
+
+            // Marks an asset for deletion
+            void DeleteAsset(std::string directory, std::string filename);
+
+            void ScanFolder(std::string folderPath);
+            void ResetScans();
+            
+            // Deletes all assets marked for deletion
+            void Cleanup();
+
+
+            sqlite3_stmt* CreateStatement(const char* sql);
+            void ExecuteStatement(sqlite3_stmt* stmt);
+            void ExecuteQuery(const char* sql);
             
         private:
-            std::string m_WatchedDirectory;
+            std::vector<std::string> m_WatchedDirectories;
+            std::unordered_map<efsw::WatchID, int> m_WatchIds;
             sqlite3* m_AssetDb;
-            efsw::FileWatcher* m_FileWatcher;
-            efsw::WatchID m_WatchId;
+            efsw::FileWatcher m_FileWatcher;
             std::unordered_map<size_t, std::shared_ptr<Asset>> m_AssetCache;
     };
 }

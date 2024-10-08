@@ -1,4 +1,9 @@
-#include "efsw/efsw.hpp"
+#include "AssetDatabase.h"
+
+#include <Assets/Asset.h>
+#include <Debug/Logger.h>
+
+#include <efsw/efsw.hpp>
 #include <sqlite3.h>
 
 #include <cstdarg>
@@ -10,9 +15,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include "Asset.h"
-#include "AssetDatabase.h"
 
 namespace Engine {
     std::string normalizePath(const std::string& pathString) {
@@ -29,219 +31,92 @@ namespace Engine {
         return 0;
     }
 
-    AssetDatabase::AssetDatabase(std::string directory) {
-        char* zErrMsg = 0;
-        int rc;
-        const char* sql;
-
-        this->m_WatchedDirectory = directory;
-
-        rc = sqlite3_open("asset.db", &m_AssetDb);
-
-        if (rc) {
-            std::cerr << "Can't open database: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
+    AssetDatabase::AssetDatabase(std::vector<std::string> directories) : m_AssetDb(nullptr), m_WatchedDirectories(directories) {
+        if (sqlite3_open("asset.db", &m_AssetDb)) {
+            ERROR("Can't open database: ", sqlite3_errmsg(m_AssetDb));
         } 
 
-        sql = "CREATE TABLE IF NOT EXISTS assets(" \
-            "ID        INTEGER PRIMARY KEY AUTOINCREMENT," \
-            "PATH      TEXT                NOT NULL," \
-            "DIRECTORY TEXT                NOT NULL," \
-            "EXTENSION TEXT                NOT NULL," \
-            "DELETED   BOOL                NOT NULL DEFAULT FALSE," \
-            "SCANNED   BOOL                NOT NULL DEFAULT TRUE," \
-            "UNIQUE(PATH, DIRECTORY)" \
-            ");";
-
-        rc = sqlite3_exec(m_AssetDb, sql, callback, 0, &zErrMsg);
-        if( rc != SQLITE_OK ){
-            std::cerr << "SQL error: " << zErrMsg << std::endl;
-            sqlite3_free(zErrMsg);
-            abort();
+        ExecuteQuery(R"(
+            CREATE TABLE IF NOT EXISTS assets(
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename  TEXT                NOT NULL,
+                extension TEXT                NOT NULL,
+                directory TEXT                NOT NULL,
+                deleted   BOOL                NOT NULL DEFAULT FALSE,
+                scanned   BOOL                NOT NULL DEFAULT TRUE,
+                UNIQUE(filename, directory)
+            );
+        )");
+        
+        long i = 0;
+        for (std::string& directory: m_WatchedDirectories) {
+            m_WatchIds[m_FileWatcher.addWatch(directory, this, true)] = i;
+            ScanFolder(directory);
         }
 
-        this->Cleanup();
-
-        // Initialize the file watcher
-        this->m_FileWatcher = new efsw::FileWatcher();
-        this->m_WatchId = this->m_FileWatcher->addWatch(directory, this, true);
-
-        this->m_FileWatcher->watch();
-
-        this ->ScanFolder(directory);
+        m_FileWatcher.watch();
     }
 
     AssetDatabase::~AssetDatabase() {
-        this->m_FileWatcher->removeWatch(this->m_WatchId);
-        this->Cleanup();    
+        for (std::pair<const long, int> watchId: m_WatchIds) {
+            m_FileWatcher.removeWatch(watchId.first);
+        }
+        Cleanup();
+        sqlite3_close(m_AssetDb);
     }
 
-    std::vector<size_t> AssetDatabase::SelectAssets(std::string query, size_t argc, ...) {
-        va_list ap;
-        va_start(ap, argc);
-
-        sqlite3_stmt* stmt;
-        sqlite3_prepare_v2(this->m_AssetDb, query.c_str(), -1, &stmt, nullptr);
-
-        for(size_t i = 0; i < argc; ++i) {
-            sqlite3_bind_text(stmt, 1, va_arg(ap, char*), -1, SQLITE_STATIC);
+    void AssetDatabase::InsertAsset(std::filesystem::path full_path) {
+        if (std::filesystem::is_directory(full_path)) {
+            return;
         }
 
-        std::vector<size_t> idVector;
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            int id = sqlite3_column_int(stmt, 0);
-            idVector.push_back((size_t)id);
+        std::string file_name = full_path.filename().string();
+        std::string extension = full_path.extension().string();
+        std::string directory = normalizePath(full_path.remove_filename().string());
+    
+        sqlite3_stmt* statement = CreateStatement(R"(
+            INSERT INTO assets (filename, extension, directory, deleted) VALUES (?, ?, ?, 0)
+                ON CONFLICT(filename, directory) DO UPDATE SET deleted = FALSE, scanned = TRUE;
+        )");
+        if (statement != nullptr) {
+            sqlite3_bind_text(statement, 1, file_name.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 2, extension.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 3, directory.c_str(), -1, SQLITE_STATIC);
 
-            if (this->m_AssetCache.find(id) != this->m_AssetCache.end())
-                continue;
+            ExecuteStatement(statement);
+        }
+    }
+
+    void AssetDatabase::UpdateAsset(std::filesystem::path full_path, std::filesystem::path old_full_path) {
+        if (std::filesystem::is_directory(full_path)) {
+            return;
+        }
+
+        std::string extension = full_path.extension().string();
+        std::string filename = full_path.filename().string();
+        std::string old_filename = old_full_path.filename().string();
+
+        std::string directory = normalizePath(full_path.remove_filename().string());
+        std::string old_directory = normalizePath(old_full_path.remove_filename().string());
+        
+        sqlite3_stmt* statement = CreateStatement(R"(
+            UPDATE assets
+                SET filename = ?,
+                extension = ?,
+                directory = ?,
+                deleted = FALSE
+                WHERE directory = ? AND filename = ?;
+        )");
+        if (statement != nullptr) {
+            sqlite3_bind_text(statement, 1, filename.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 2, extension.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 3, directory.c_str(), -1, SQLITE_STATIC);
             
-            std::string path((char*)sqlite3_column_text(stmt, 1));
-            std::string directory((char*)sqlite3_column_text(stmt, 2));
-            std::string extension((char*)sqlite3_column_text(stmt, 3));
-
-            std::string fullPath = (std::filesystem::path(this->m_WatchedDirectory) / (strcmp(directory.c_str(), ".") == 0 ? "" : directory ) / path).string();
-
-            std::shared_ptr<Asset> asset = std::make_shared<Asset>(
-                static_cast<size_t>(id),
-                fullPath,
-                directory,
-                extension,
-                static_cast<bool>(sqlite3_column_int(stmt, 4))
-            );
-
-            this->m_AssetCache[static_cast<size_t>(id)] = asset;
+            sqlite3_bind_text(statement, 4, old_directory.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 5, old_filename.c_str(), -1, SQLITE_STATIC);
+            
+            ExecuteStatement(statement);
         }
-
-        sqlite3_finalize(stmt);
-        va_end(ap);
-        return idVector;
-    }
-
-    std::shared_ptr<Asset> AssetDatabase::GetAssetByID(size_t id) {
-        std::unordered_map<size_t, std::shared_ptr<Asset>>::const_iterator asset = this->m_AssetCache.find(id);
-        std::shared_ptr<Asset> ret = this->m_AssetCache[id];
-        if (asset != this->m_AssetCache.end())
-            return ret;
-
-        this->SelectAssets("SELECT * FROM assets WHERE ID = ?", 1, std::to_string(id).c_str());
-
-        asset = this->m_AssetCache.find(id);
-        if (asset != this->m_AssetCache.end())
-            return this->m_AssetCache[id];
-
-        return NULL;
-    }
-
-    std::string AssetDatabase::GetWatchedDirectory() {
-        return this->m_WatchedDirectory;
-    }
-
-    void AssetDatabase::Cleanup() { 
-        char* zErrMsg = 0;
-        int rc;
-        const char* sql = "DELETE FROM assets WHERE DELETED = TRUE";
-        
-        rc = sqlite3_exec(m_AssetDb, sql, callback, 0, &zErrMsg);
-        if( rc != SQLITE_OK ){
-            std::cerr << "SQL error: " << zErrMsg << std::endl;
-            sqlite3_free(zErrMsg);
-            abort();
-        }
-    }
-
-    void AssetDatabase::InsertAsset(std::string directory, std::string filename) {
-        if (std::filesystem::is_directory(directory + filename)) {
-            return;
-        }
-
-        std::filesystem::path file_path = std::filesystem::path(filename);
-
-        std::string extension = file_path.extension().string();
-        std::string relative_directory = normalizePath(std::filesystem::relative(directory, std::filesystem::current_path() / "assets").string());
-
-        int rc;
-
-        // Use parameter placeholders ('?') to prevent SQL injection
-        const char* sql = "INSERT INTO assets (PATH, DIRECTORY, EXTENSION, DELETED) "
-                        "VALUES (?, ?, ?, 0) "
-                        "ON CONFLICT(PATH, DIRECTORY) DO UPDATE SET DELETED = FALSE, SCANNED = TRUE;";
-
-        // Prepare the SQL statement
-        sqlite3_stmt* stmt;
-        rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
-        if (rc != SQLITE_OK) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
-        }
-
-        // Bind the parameters to the SQL statement
-        sqlite3_bind_text(stmt, 1, filename.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, relative_directory.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 3, extension.c_str(), -1, SQLITE_STATIC);
-
-        // Execute the SQL statement
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            sqlite3_finalize(stmt);
-            abort();
-        }
-
-        // Clean up
-        sqlite3_finalize(stmt);
-    }
-
-    void AssetDatabase::UpdateAsset(std::string directory, std::string filename, std::string old_filename) {
-        if (std::filesystem::is_directory(directory + filename)) {
-            return;
-        }
-
-        std::filesystem::path file_path = std::filesystem::path(filename);
-
-
-        std::string extension = file_path.extension().string();
-        std::string relative_directory = normalizePath(std::filesystem::path(filename).remove_filename().string());
-        std::string old_relative_directory = normalizePath(std::filesystem::path(old_filename).remove_filename().string());
-        filename = std::filesystem::path(filename).filename().string();
-        old_filename = std::filesystem::path(old_filename).filename().string();
-
-        int rc;
-
-        // Use parameter placeholders ('?') to prevent SQL injection
-        const char* sql = "UPDATE assets " \
-                    "SET PATH = ?, " \
-                    "DIRECTORY = ?, " \
-                    "EXTENSION = ?, " \
-                    "DELETED = FALSE " \
-                    "WHERE DIRECTORY = ? " \
-                    "AND PATH = ?;";
-
-        // Prepare the SQL statement
-        sqlite3_stmt* stmt;
-        rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
-        if (rc != SQLITE_OK) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
-        }
-
-        // Bind the parameters to the SQL statement
-        sqlite3_bind_text(stmt, 1, filename.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, relative_directory.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 3, extension.c_str(), -1, SQLITE_STATIC);
-        
-        sqlite3_bind_text(stmt, 4, old_relative_directory.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 5, old_filename.c_str(), -1, SQLITE_STATIC);
-
-        // Execute the SQL statement
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            sqlite3_finalize(stmt);
-            abort();
-        } 
-
-        // Clean up
-        sqlite3_finalize(stmt);
     }
 
     void AssetDatabase::DeleteAsset(std::string directory, std::string filename) {
@@ -253,53 +128,41 @@ namespace Engine {
 
         std::string extension = file_path.extension().string();
         std::string relative_directory = normalizePath(std::filesystem::relative(directory, std::filesystem::current_path() / "assets").string());
+    
+        sqlite3_stmt* statement = CreateStatement("UPDATE assets SET deleted = TRUE WHERE filename = ? AND directory = ?;");
+        if (statement != nullptr) {
+            sqlite3_bind_text(statement, 1, filename.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(statement, 2, relative_directory.c_str(), -1, SQLITE_STATIC);
 
-        int rc;
-
-        // Use parameter placeholders ('?') to prevent SQL injection
-        const char* sql = "UPDATE assets SET DELETED = TRUE WHERE PATH = ? AND DIRECTORY = ?";
-
-        // Prepare the SQL statement
-        sqlite3_stmt* stmt;
-        rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
-        if (rc != SQLITE_OK) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
+            ExecuteStatement(statement);
         }
-
-        // Bind the parameters to the SQL statement
-        sqlite3_bind_text(stmt, 1, filename.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, relative_directory.c_str(), -1, SQLITE_STATIC);
-
-        // Execute the SQL statement
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            sqlite3_finalize(stmt);
-            abort();
-        } 
-
-        // Clean up
-        sqlite3_finalize(stmt);
     }
 
     void AssetDatabase::handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) {
+
+        std::string current_dir = m_WatchedDirectories[0];
+        
+        std::filesystem::path full_path = relative(std::filesystem::path(dir + filename), std::filesystem::path(current_dir));
+        std::filesystem::path old_full_path = relative(std::filesystem::path(dir + oldFilename), std::filesystem::path(current_dir));
+
         switch ( action ) {
             case efsw::Actions::Add:
-                this->InsertAsset(dir, filename);
+                InsertAsset(full_path);
+                DEBUG("ACTION: (Add) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Delete:
-                this->DeleteAsset(dir, filename);
+                DeleteAsset(dir, filename);
+                DEBUG("ACTION: (Delete) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Modified:
-                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                DEBUG("ACTION: (Modified) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             case efsw::Actions::Moved:
-                this->UpdateAsset(dir, filename, oldFilename);
+                UpdateAsset(full_path, old_full_path);
+                DEBUG("ACTION: (Moved) DIR (", dir, ") FILE_NAME (", filename, ") OLD_FILE_NAME(", oldFilename, ")");
                 break;
             default:
-                std::cout << "Should never happen!" << std::endl;
-                abort();
+                ERROR("Asset Database: ", "Reached the default");
         }
     }
 
@@ -310,42 +173,59 @@ namespace Engine {
             }
 
             if (std::filesystem::is_regular_file(entry)) {
-                std::string dir = entry.path().parent_path().string();
-                std::string filename = entry.path().filename().string();
-                this->InsertAsset(dir, filename);
+                std::filesystem::path full_path = relative(entry.path(), std::filesystem::path(m_WatchedDirectories[0]));
+                InsertAsset(full_path);
             }
         }
 
-        // Delete the files not scanned
-        const char* sql = "UPDATE assets SET DELETED = TRUE WHERE SCANNED = FALSE;";
-        this->ExecuteStatement(sql);
+        sqlite3_stmt* statement = CreateStatement("UPDATE assets SET deleted = TRUE WHERE scanned = FALSE");
+        if (statement != nullptr)
+            ExecuteStatement(statement);
 
-        // Set scanned to false on all files
-        this->ResetScans();
-        this->Cleanup();
+        ResetScans();
+        Cleanup();
+    }
+
+    void AssetDatabase::Cleanup() {
+        ExecuteQuery("DELETE FROM assets WHERE deleted = TRUE");
     }
 
     void AssetDatabase::ResetScans() {
-        const char* sql = "UPDATE assets SET SCANNED = FALSE WHERE SCANNED = TRUE;";
-        this->ExecuteStatement(sql);
+        sqlite3_stmt* statement = CreateStatement("UPDATE assets SET scanned = FALSE WHERE scanned = TRUE");
+        if (statement != nullptr)
+            ExecuteStatement(statement);
     }
 
-    void AssetDatabase::ExecuteStatement(const char* sql) {
+    sqlite3_stmt* AssetDatabase::CreateStatement(const char* sql) {
         int rc;
         sqlite3_stmt* stmt;
         rc = sqlite3_prepare_v2(m_AssetDb, sql, -1, &stmt, NULL);
         if (rc != SQLITE_OK) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
-            abort();
+            ERROR("SQL error: ", sqlite3_errmsg(m_AssetDb));
+            return nullptr;
         }
 
+        return stmt;
+    }
+
+    void AssetDatabase::ExecuteStatement(sqlite3_stmt* stmt) {
+        int rc;
         rc = sqlite3_step(stmt);
         if (rc != SQLITE_DONE) {
-            std::cerr << "SQL error: " << sqlite3_errmsg(m_AssetDb) << std::endl;
+            ERROR("SQL error: ", sqlite3_errmsg(m_AssetDb));
             sqlite3_finalize(stmt);
-            abort();
         } 
-
         sqlite3_finalize(stmt);
+    }
+
+    void AssetDatabase::ExecuteQuery(const char* sql) {
+        char* zErrMsg = 0;
+
+        int rc = sqlite3_exec(m_AssetDb, sql, callback, 0, &zErrMsg);
+
+        if ( rc != SQLITE_OK) {
+            ERROR("SQL error: ", zErrMsg);
+            sqlite3_free(zErrMsg);
+        }
     }
 }
