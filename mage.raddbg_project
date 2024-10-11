@@ -18,20 +18,6 @@ target:
   active:            1
 }
 
-/// breakpoints ///////////////////////////////////////////////////////////////
-
-breakpoint:
-{
-  line: ("engine/src/Assets/AssetDatabase.cpp":146)
-  enabled: 1
-}
-
-breakpoint:
-{
-  line: ("engine/src/Assets/AssetDatabase.cpp":118)
-  enabled: 1
-}
-
 /// exception code filters ////////////////////////////////////////////////////
 
 exception_code_filters:
