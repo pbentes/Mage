@@ -14,17 +14,7 @@
 #include <vector>
 
 namespace Engine {
-    std::string normalizePath(const std::string& pathString) {
-        std::filesystem::path pathObj(pathString);
-        pathObj.make_preferred();
-        pathObj = pathObj.lexically_normal();
-        if (!pathObj.empty() && pathObj.string().back() == std::filesystem::path::preferred_separator) {
-            return pathObj.string().substr(0, pathObj.string().size() - 1);
-        }
-        return pathObj.string();
-    }
-
-    int callback(void* NotUsed, int argc, char** argv, char** azColName){
+    int callback(void* NotUsed, int argc, char** argv, char** azColName) {
         return 0;
     }
 
@@ -60,6 +50,48 @@ namespace Engine {
         }
         Cleanup();
         sqlite3_close(m_AssetDb);
+    }
+
+    std::shared_ptr<Asset> AssetDatabase::GetAsset(std::string resourcePath) {
+
+    }
+
+    std::vector<size_t> AssetDatabase::GetAssetsQuery(std::string query, std::vector<std::string> args) {
+        sqlite3_stmt* stmt = CreateStatement(query.c_str());
+
+        int i = 1;
+        for (std::string& arg: args) {
+            sqlite3_bind_text(stmt, i, arg.c_str(), -1, SQLITE_STATIC);
+            i++;
+        }
+
+        std::vector<size_t> idVector;
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+            idVector.push_back((size_t)id);
+
+            if (m_AssetCache.find(id) != m_AssetCache.end())
+                continue;
+            
+            std::string path((char*)sqlite3_column_text(stmt, 1));
+            std::string directory((char*)sqlite3_column_text(stmt, 2));
+            std::string extension((char*)sqlite3_column_text(stmt, 3));
+
+            std::string fullPath = (std::filesystem::path(m_WatchedDirectories[0]) / (strcmp(directory.c_str(), ".") == 0 ? "" : directory ) / path).string();
+
+            std::shared_ptr<Asset> asset = std::make_shared<Asset>(
+                static_cast<size_t>(id),
+                fullPath,
+                directory,
+                extension,
+                static_cast<bool>(sqlite3_column_int(stmt, 4))
+            );
+
+            this->m_AssetCache[static_cast<size_t>(id)] = asset;
+        }
+
+        sqlite3_finalize(stmt);
+        return idVector;
     }
 
     void AssetDatabase::InsertAsset(std::filesystem::path full_path) {
@@ -220,5 +252,15 @@ namespace Engine {
             ERROR("SQL error: ", zErrMsg);
             sqlite3_free(zErrMsg);
         }
+    }
+
+    std::string AssetDatabase::normalizePath(const std::string& pathString) {
+        std::filesystem::path pathObj(pathString);
+        pathObj.make_preferred();
+        pathObj = pathObj.lexically_normal();
+        if (!pathObj.empty() && pathObj.string().back() == std::filesystem::path::preferred_separator) {
+            return pathObj.string().substr(0, pathObj.string().size() - 1);
+        }
+        return pathObj.string();
     }
 }

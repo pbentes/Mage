@@ -17,11 +17,12 @@ namespace Engine {
         public:
             AssetDatabase(std::vector<std::string> directories);
             ~AssetDatabase();
-
-            void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override;
             
             // <WatchedFolderName>://path/to/file.txt
             std::shared_ptr<Asset> GetAsset(std::string resourcePath);
+            std::vector<size_t> GetAssetsQuery(std::string query, std::vector<std::string> args);
+
+            void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override;
 
         private:
             friend int callback(void* NotUsed, int argc, char** argv, char** azColName);
@@ -33,16 +34,18 @@ namespace Engine {
             // Marks an asset for deletion
             void DeleteAsset(std::string directory, std::string filename);
 
+            // Scan a folder on startup
             void ScanFolder(std::string folderPath);
             void ResetScans();
             
             // Deletes all assets marked for deletion
             void Cleanup();
 
-
             sqlite3_stmt* CreateStatement(const char* sql);
             void ExecuteStatement(sqlite3_stmt* stmt);
             void ExecuteQuery(const char* sql);
+
+            std::string normalizePath(const std::string& pathString);
             
         private:
             std::vector<std::string> m_WatchedDirectories;
