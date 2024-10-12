@@ -1,13 +1,14 @@
 ---@class Player: Behaviour
-local player = Behaviour:new()
+Player = Behaviour:new()
 
-player.j = 10
+local k = 120
 
-function player:update (delta)
-    if not delta == nil then
-        self.k = delta
+---@type number
+Player.j = 10
+
+function Player:update(delta)
+    if delta ~= nil then
+        self.k = k + delta
     end
     self.j = self.j + 1
 end
-
-return player
