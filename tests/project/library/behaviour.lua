@@ -18,10 +18,10 @@ end
 function Behaviour:start()
 end
 
-function Behaviour:update()
+function Behaviour:update(delta)
 end
 
-function Behaviour:late_update()
+function Behaviour:late_update(delta)
 end
 
 function Behaviour:on_destroy()
@@ -35,7 +35,7 @@ end
 
 -- Physics Hooks
 
-function Behaviour:fixed_update()
+function Behaviour:fixed_update(delta)
 end
 
 function Behaviour:on_trigger_enter()
