@@ -1,17 +1,8 @@
 #include "Behaviour.h"
-#include "Debug/Logger.h"
+#include "sol/table.hpp"
 
 namespace Engine {
-    Behaviour::Behaviour(sol::state& lua_state, const std::string& script_path) {
-        sol::load_result script = lua_state.load_file(script_path);
-        if (!script.valid()) {
-            sol::error err = script;
-            ERROR(err.what());
-            return;
-        }
-
-        self = script();
-
+    Behaviour::Behaviour(sol::table& table): self(table) {
         // Setup Lifecycle Hooks
         hooks.start = self["start"];
         hooks.update = self["update"];

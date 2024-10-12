@@ -5,7 +5,7 @@
 namespace Engine {
     class Behaviour {
         public:
-            Behaviour(sol::state& lua_state, const std::string& script_path);
+            Behaviour(sol::table& table);
             ~Behaviour();
 
             // Lifecycle Hooks
