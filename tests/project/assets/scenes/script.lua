@@ -1,9 +1,13 @@
-local public = Behaviour:new()
+---@class Player: Behaviour
+local player = Behaviour:new()
 
-public.j = 10
+player.j = 10
 
-function public:update (delta)
+function player:update (delta)
+    if not delta == nil then
+        self.k = delta
+    end
     self.j = self.j + 1
 end
 
-return public
+return player
