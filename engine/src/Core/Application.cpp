@@ -13,13 +13,17 @@ namespace Engine {
 
     Application::~Application() {}
 
+    void Application::CloseApplication() {
+        ApplicationShouldClose = true;
+    }
+
     void Application::run() {
         PROFILE_SCOPE("Application Loop");
-        Renderer render;
+        Renderer render(this);
 
         render.init();
 
-        while (!WindowShouldClose())
+        while (!ApplicationShouldClose)
         {
             render.update(GetFrameTime());
         }

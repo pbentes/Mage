@@ -1,10 +1,13 @@
 #include "Renderer.h"
 
 #include "../Debug/Instrumentor.h"
+#include "Core/Application.h"
 
 #include <raylib.h>
 
 namespace Engine {
+
+    Renderer::Renderer(Application* app): m_App(app) {}
 
     void Renderer::init() {
         const int screenWidth = 800;
@@ -38,9 +41,8 @@ namespace Engine {
             // GUI
             
         EndDrawing();
-    }
 
-    void Renderer::succeeded() { CloseWindow(); }
-    void Renderer::failed() { CloseWindow(); }
-    void Renderer::aborted() { CloseWindow(); }
+        if(WindowShouldClose())
+            m_App->CloseApplication();
+    }
 }

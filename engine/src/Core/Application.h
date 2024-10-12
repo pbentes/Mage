@@ -9,5 +9,9 @@ namespace Engine {
             ~Application();
 
             void run();
+            void CloseApplication();
+        
+        private:
+            bool ApplicationShouldClose = false;
     };
 }

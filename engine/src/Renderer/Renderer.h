@@ -1,19 +1,19 @@
 #pragma once
 
+#include <Core/Application.h>
+
 #include <raylib.h>
 
 namespace Engine {
     class Renderer {
         public:
-            Renderer() = default;
+            Renderer(Application* app);
             ~Renderer() = default;
 
             void init();
             void update(float delta);
-            void succeeded();
-            void failed();
-            void aborted();
         private:
+            Application* m_App;
             RenderTexture2D m_RenderTexture;
     };
 }
