@@ -1,6 +1,6 @@
 {
     "Lua.workspace.library": [
-        "/tests/project/scenes"
+        "."
     ],
     "runtime.version": "Lua 5.4"
 }
