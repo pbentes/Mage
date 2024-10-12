@@ -52,10 +52,6 @@ namespace Engine {
         sqlite3_close(m_AssetDb);
     }
 
-    std::shared_ptr<Asset> AssetDatabase::GetAsset(std::string resourcePath) {
-
-    }
-
     std::vector<size_t> AssetDatabase::GetAssetsQuery(std::string query, std::vector<std::string> args) {
         sqlite3_stmt* stmt = CreateStatement(query.c_str());
 
