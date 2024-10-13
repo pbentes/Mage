@@ -16,16 +16,21 @@ namespace Engine {
             Scripting();
             ~Scripting() = default;
 
-            void LoadScript(std::string path);
+            void LoadUserScript(std::string path);
+            void LoadLibrary(std::string path);
 
-            std::unique_ptr<Behaviour> LoadBehaviour(UUID64 entityId, sol::table behaviour);
+            std::unique_ptr<Behaviour> AttachBehaviourToEntity(UUID64 entityId, std::string script);
             std::unique_ptr<void> LoadPanel();
 
         private:
             sol::table DeepCopyTable(const sol::table& original);
+            bool IsMetatable(sol::table table, sol::table metatable);
+            bool TablesAreEqual(sol::table a, sol::table b);
+
+        public:
+            sol::state m_Lua;
 
         private:
-            sol::state m_Lua;
-            std::unordered_map<std::string, std::vector<std::string>> m_ScriptKeys; // Maps a script's path to the top level keys in that script (Tables, Variables, Functions)
+            std::unordered_map<std::string, std::string> m_ScriptBehaviour; // Maps a script's path to the behaviour
     };
 }
