@@ -7,8 +7,9 @@ local k = 120
 Player.j = 10
 
 function Player:update(delta)
-    if delta ~= nil then
-        self.k = k + delta
-    end
+    print("Player1:", Entity1_Player.j)
+    k = k + 1
+
     self.j = self.j + 1
+    print(self.j)
 end
