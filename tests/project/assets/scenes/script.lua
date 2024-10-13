@@ -7,7 +7,9 @@ local k = 120
 Player.j = 10
 
 function Player:update(delta)
-    print("Player1:", Entity1_Player.j)
+    ---@type Player
+    local player1 = Entity1_Player
+    print("Player1:", player1.j)
     k = k + 1
 
     self.j = self.j + 1
