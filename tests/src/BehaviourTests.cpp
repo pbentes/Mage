@@ -6,9 +6,10 @@
 
 namespace EngineTests {
     TEST(Behaviour, CreateBehaviour) {
+        Engine::AssetDatabase asset_db(std::vector<std::string> {"C:\\Users\\Pedro Bentes\\Desktop\\Mage\\tests\\project"});
         Engine::Scripting scripting;
 
-        scripting.LoadLibrary("C:\\Users\\Pedro Bentes\\Desktop\\Mage\\tests\\project\\library\\behaviour.lua");
+        scripting.LoadLibrary(&asset_db);
         scripting.LoadUserScript("C:\\Users\\Pedro Bentes\\Desktop\\Mage\\tests\\project\\assets\\scenes\\script.lua");
 
         uint64_t entity = 1;
@@ -22,7 +23,7 @@ namespace EngineTests {
         bhvr->update(1);
         bhvr2->update(1);
 
-        sol::table test = scripting.m_Lua.get<sol::table>("Entity1_Player");
+        sol::table test = scripting.m_Lua.get<sol::table>("_1_Player");
         int testi = test.get<int>("j");
 
         std::cout << "Test: " << testi << std::endl;

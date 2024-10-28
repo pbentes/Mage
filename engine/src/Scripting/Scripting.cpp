@@ -1,5 +1,6 @@
 #include "Scripting.h"
 
+#include "Assets/AssetDatabase.h"
 #include "Core/UUID.h"
 #include "Debug/Logger.h"
 #include "Scripting/Behaviour.h"
@@ -7,9 +8,12 @@
 #include "sol/optional_implementation.hpp"
 #include "sol/table.hpp"
 
+#include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 namespace Engine {
     Scripting::Scripting() {
@@ -61,8 +65,6 @@ namespace Engine {
 
             sol::object value = global_after[key];
             if (value.is<sol::table>()) {
-                std::cout << "Key '" << key << "' is a table." << std::endl;
-
                 if (!BehaviourBaseOptional)
                     continue;
 
@@ -75,10 +77,49 @@ namespace Engine {
         }
     }
 
-    void Scripting::LoadLibrary(std::string path) {
-        sol::protected_function_result result = m_Lua.script_file(path);
-        if (!result.valid()) {
-            ERROR("Failed to load script");
+    void Scripting::LoadLibrary(AssetDatabase* assetDB) {
+        std::vector<size_t> assetIDs = assetDB->GetAssetsQuery("SELECT * FROM assets WHERE extension = '.lua' AND directory like 'library%' and deleted = 0;", {});
+        std::vector<size_t> failedToLoad = {};
+
+        for (size_t& id : assetIDs) {
+            std::string path = assetDB->m_AssetCache[assetIDs[0]]->GetPath();
+            
+            sol::protected_function_result result = m_Lua.script_file(path);
+            if (!result.valid()) {
+                failedToLoad.push_back(id);
+            }
+        }
+
+        if (failedToLoad.empty()) {
+            return;
+        }
+            
+        int failedToLoadCount = failedToLoad.size();
+        while (!failedToLoad.empty()) {
+            for (size_t& id : failedToLoad) {
+                std::string path = assetDB->m_AssetCache[assetIDs[0]]->GetPath();
+            
+                sol::protected_function_result result = m_Lua.script_file(path);
+                if (result.valid()) {
+                    failedToLoad.erase(std::remove(failedToLoad.begin(), failedToLoad.end(), id), failedToLoad.end());
+                }
+            }
+
+            if (failedToLoad.size() == failedToLoadCount) {
+                for (size_t& id : failedToLoad) {
+                    std::string path = assetDB->m_AssetCache[assetIDs[0]]->GetPath();
+                
+                    sol::protected_function_result result = m_Lua.script_file(path);
+                    if (!result.valid()) {
+                        sol::error err = result;
+                        std::string error_message = err.what();
+                        ERROR("Failed to load script: ", error_message);
+                    }
+                }
+                return;
+            }
+
+            failedToLoadCount = failedToLoad.size();
         }
     }
 
@@ -89,7 +130,7 @@ namespace Engine {
             return NULL;
         }
 
-        std::string newKey = "Entity" + std::to_string(entityId.m_UUID) + "_" + key->second;
+        std::string newKey = "_" + std::to_string(entityId.m_UUID) + "_" + key->second;
         m_Lua[newKey] = DeepCopyTable(m_Lua.get<sol::table>(key->second));
 
         sol::table tbl = m_Lua.get<sol::table>(newKey);

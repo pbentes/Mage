@@ -7,7 +7,7 @@ target:
   exe:               "build/tests/tests.exe"
   arguments:         ""
   working_directory: "build/tests"
-  active:            0
+  active:            1
 }
 
 target:
@@ -15,7 +15,15 @@ target:
   exe:               "build/runtime/runtime.exe"
   arguments:         ""
   working_directory: "../Mage"
-  active:            1
+  active:            0
+}
+
+/// breakpoints ///////////////////////////////////////////////////////////////
+
+breakpoint:
+{
+  line: ("tests/src/BehaviourTests.cpp":9)
+  enabled: 1
 }
 
 /// exception code filters ////////////////////////////////////////////////////

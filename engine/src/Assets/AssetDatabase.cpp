@@ -44,6 +44,10 @@ namespace Engine {
         m_FileWatcher.watch();
     }
 
+    std::string AssetDatabase::GetRoot() {
+        return m_WatchedDirectories[0];
+    }
+
     AssetDatabase::~AssetDatabase() {
         for (std::pair<const long, int> watchId: m_WatchIds) {
             m_FileWatcher.removeWatch(watchId.first);
@@ -70,8 +74,8 @@ namespace Engine {
                 continue;
             
             std::string path((char*)sqlite3_column_text(stmt, 1));
-            std::string directory((char*)sqlite3_column_text(stmt, 2));
-            std::string extension((char*)sqlite3_column_text(stmt, 3));
+            std::string extension((char*)sqlite3_column_text(stmt, 2));
+            std::string directory((char*)sqlite3_column_text(stmt, 3));
 
             std::string fullPath = (std::filesystem::path(m_WatchedDirectories[0]) / (strcmp(directory.c_str(), ".") == 0 ? "" : directory ) / path).string();
 

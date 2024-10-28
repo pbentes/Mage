@@ -22,7 +22,12 @@ namespace Engine {
             std::shared_ptr<Asset> GetAsset(std::string resourcePath);
             std::vector<size_t> GetAssetsQuery(std::string query, std::vector<std::string> args);
 
+            std::string GetRoot();
+
             void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override;
+        
+        public:
+            std::unordered_map<size_t, std::shared_ptr<Asset>> m_AssetCache;
 
         private:
             friend int callback(void* NotUsed, int argc, char** argv, char** azColName);
@@ -46,12 +51,10 @@ namespace Engine {
             void ExecuteQuery(const char* sql);
 
             std::string normalizePath(const std::string& pathString);
-            
         private:
             std::vector<std::string> m_WatchedDirectories;
             std::unordered_map<efsw::WatchID, int> m_WatchIds;
             sqlite3* m_AssetDb;
             efsw::FileWatcher m_FileWatcher;
-            std::unordered_map<size_t, std::shared_ptr<Asset>> m_AssetCache;
     };
 }

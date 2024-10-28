@@ -2,6 +2,7 @@
 
 #include <Core/UUID.h>
 #include <Scripting/Behaviour.h>
+#include <Assets/AssetDatabase.h>
 
 #include <sol/sol.hpp>
 #include "sol/table.hpp"
@@ -17,7 +18,7 @@ namespace Engine {
             ~Scripting() = default;
 
             void LoadUserScript(std::string path);
-            void LoadLibrary(std::string path);
+            void LoadLibrary(AssetDatabase* assetDB);
 
             std::unique_ptr<Behaviour> AttachBehaviourToEntity(UUID64 entityId, std::string script);
             std::unique_ptr<void> LoadPanel();

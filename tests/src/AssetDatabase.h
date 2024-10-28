@@ -2,7 +2,6 @@
 
 #include <Assets/AssetDatabase.h>
 
-#include <filesystem>
 #include <vector>
 
 namespace EngineTests {
