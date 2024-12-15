@@ -3,15 +3,15 @@
 #include <iostream>
 
 int main() {
-    Application::ApplicationSettings app_settings = {
+    ApplicationSettings app_settings = {
         .title = "",
         .window_width = 800,
         .window_height = 450
     };
 
-    Application::Application app = Application::app_init(&app_settings);
+    Application app = app_init(&app_settings);
 
-    Application::app_run(&app);
+    app_run(&app);
 
     std::cout << "Hello mage!" << std::endl;
 }
