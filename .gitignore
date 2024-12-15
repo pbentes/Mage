@@ -2,6 +2,7 @@
 .vs
 build
 vendor/lua/
+vendor/luajit/
 /project
 
 # Program generated

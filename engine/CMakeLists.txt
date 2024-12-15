@@ -10,8 +10,6 @@ link_directories(
     ${flecs_BINARY_DIR}
     ${raylib_BINARY_DIR}/raylib
     ${lua_BINARY_DIR}
-    ${efsw_BINARY_DIR}
-    ${sqlite3_BINARY_DIR}
 )
 
 file(GLOB_RECURSE ENGINE_SRC
@@ -19,27 +17,24 @@ file(GLOB_RECURSE ENGINE_SRC
     "src/*.h"
 )
 
-add_library(${ProjectName} STATIC ${ENGINE_SRC})
+add_executable(${ProjectName} ${ENGINE_SRC})
 
 add_dependencies(${ProjectName} enet raylib lua Jolt)
 
 target_include_directories( ${ProjectName}
-    PUBLIC ${enet_SOURCE_DIR}/include
-    PUBLIC ${raylib_BINARY_DIR}/raylib/include
-    PUBLIC ${raygui_SRC}
-    PUBLIC ${lua_SOURCE_DIR}
-    PUBLIC ${sol2_SOURCE_DIR}/include
-    PUBLIC ${efsw_SOURCE_DIR}/include
-    PUBLIC ${sqlite3_SOURCE_DIR}
-    PUBLIC ${JoltPhysics_SOURCE_DIR}/..
-    PUBLIC ${engine_SOURCE_DIR}/src
+    PRIVATE ${enet_SOURCE_DIR}/include
+    PRIVATE ${raylib_BINARY_DIR}/raylib/include
+    PRIVATE ${raygui_SRC}
+    PRIVATE ${luajit_SOURCE_DIR}
+    PRIVATE ${sol2_SOURCE_DIR}/include
+    PRIVATE ${JoltPhysics_SOURCE_DIR}/..
+    PRIVATE ${engine_SOURCE_DIR}/src
+    PRIVATE ${toml11_SOURCE_DIR}
 )
 
 target_link_libraries(${ProjectName}
-    PUBLIC enet
-    PUBLIC raylib
-    PUBLIC lua
-    PUBLIC efsw
-    PUBLIC sqlite3
-    PUBLIC Jolt
+    PRIVATE enet
+    PRIVATE raylib
+    PRIVATE lua
+    PRIVATE Jolt
 )

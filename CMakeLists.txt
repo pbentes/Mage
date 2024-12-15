@@ -9,7 +9,5 @@ add_subdirectory("vendor")
 
 set(CMAKE_FOLDER /)
 add_subdirectory("engine")
-add_subdirectory("runtime")
-add_subdirectory("tests")
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "runtime")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "engine")

@@ -1,31 +1,63 @@
-#include "Application.h"
+#include "application.h"
+#include "toml/serializer.hpp"
 
-#include "../Debug/Instrumentor.h"
-#include "../Renderer/Renderer.h"
-
-#include <memory>
 #include <raylib.h>
+#include <toml.hpp>
 
-namespace Engine {
-    Application::Application() {
-        Instrumentor::Get().BeginSession("Engine");
+namespace Application {
+    ////////////////////////////////
+    //~ pgb: Application
+
+    std::string app_settings_serialize(ApplicationSettings* app_settings) {
+        toml::value value(toml::table {
+            {"title", toml::string{ app_settings->title }},
+            {"window_width", toml::integer{ app_settings->window_width }},
+            {"window_height", toml::integer{ app_settings->window_height }},
+        });
+
+        return toml::format(value);
     }
 
-    Application::~Application() {}
+    ApplicationSettings app_settings_deserialize(std::string path) {
+        const toml::value app_settings = toml::parse(path);
 
-    void Application::CloseApplication() {
-        ApplicationShouldClose = true;
+        return ApplicationSettings {
+            .title = toml::find<std::string>(app_settings, "title").c_str(),
+            .window_width = toml::find<int>(app_settings, "window_width"),
+            .window_height = toml::find<int>(app_settings, "window_height")
+        };
     }
 
-    void Application::run() {
-        PROFILE_SCOPE("Application Loop");
-        Renderer render(this);
+    ////////////////////////////////
+    //~ pgb: Application
 
-        render.init();
+    Application app_init(ApplicationSettings* app_settings) {
+        return Application {
+            .application_settings     = app_settings,
+            .application_should_close = false
+        };
+    }
 
-        while (!ApplicationShouldClose)
+    void app_run(Application* app) {
+#ifdef __EMSCRIPTEN__
+        emscripten_set_main_loop_arg(main_loop, app, 0, 1);
+#else
+        while (!app->application_should_close)
         {
-            render.update(GetFrameTime());
+            app_loop(app);
         }
+#endif
+    }
+
+    void app_loop(Application* app) {
+        app_close(app);
+    }
+
+    void app_close(Application* app) {
+        app->application_should_close = true;
+    }
+
+    void app_cleanup(Application* app) {
+        
     }
 }

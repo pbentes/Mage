@@ -6,4 +6,4 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/nicbarker/clay.git
   GIT_TAG "main"
 )
-FetchContent_MakeAvailable(clay)
+FetchContent_Populate(clay)
