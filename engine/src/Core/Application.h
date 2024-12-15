@@ -3,13 +3,13 @@
 #include "window.h"
 
 #include <string>
-#include <vector>
 
 //////////////////////////////
 //~ pgb: Application Settings
 
 typedef struct ApplicationSettings {
-    std::string title;
+    std::string window_api;
+    std::string window_title;
     int window_width;
     int window_height;
 } ApplicationSettings;
@@ -23,7 +23,9 @@ ApplicationSettings app_settings_deserialize(std::string path);
 typedef struct Application {
     ApplicationSettings* application_settings;
     bool application_should_close;
-    std::vector<Window> windows;
+    Window* window;
+
+    std::string project_directory;
 } Application;
 
 Application app_init(ApplicationSettings* app_settings);
