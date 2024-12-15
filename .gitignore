@@ -1,6 +1,7 @@
 .cache
 .vs
 build
+ignored
 vendor/lua/
 vendor/luajit/
 /project
