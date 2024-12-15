@@ -1,9 +1,9 @@
 #pragma once
 
 typedef struct RendererAPI {
-    void (*Initialize)(void);
-    void (*Shutdown)(void);
+    void (*init)(void);
+    void (*cleanup)(void);
 
-    void (*BeginFrame)(void);
-    void (*EndFrame)(void);
+    void (*begin_frame)(void);
+    void (*end_frame)(void);
 } RendererAPI;
