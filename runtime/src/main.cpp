@@ -1,8 +1,5 @@
-#include <Core/Application.h>
-
-#include <raylib.h>
+#include <debug/logger.h>
 
 int main() {
-    Engine::Application app;
-    app.run();
+    INFO(10);
 }
