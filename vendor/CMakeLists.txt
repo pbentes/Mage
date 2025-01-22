@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 include(FetchContent)
 
-include(raylib.cmake)
-include(raygui.cmake)
+include(glad.cmake)
+include(glfw3.cmake)
+include(glm.cmake)
+include(imgui.cmake)
 include(enet.cmake)
 include(lua.cmake)
 include(sol2.cmake)
