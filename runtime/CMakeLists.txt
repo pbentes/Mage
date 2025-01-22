@@ -21,8 +21,6 @@ add_dependencies(${ProjectName} engine)
 target_include_directories( ${ProjectName}
     PRIVATE ${enet_SOURCE_DIR}/include
     PRIVATE ${entt_SRC}/single_include
-    PRIVATE ${raylib_BINARY_DIR}/raylib/include
-    PRIVATE ${raygui_SRC}
     PRIVATE ${engine_SOURCE_DIR}/src
 )
 
