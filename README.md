@@ -3,7 +3,7 @@
 
 # Mage
 
-Mage is a game engine built from the ground up to create entirely modable games. To achieve this goal, the editor will be embeded in the game runtime, allowing anyone with a copy of the game to create mods using the same tools used to create the game in the first place.
+At one point the main goal I had for this engine was making it mod friendly. While I learned a lot doing this I have decided to shift the engine's goal towards supporting an idea for a single game rather than creating a general purpose game engine.
 
 ## Building
 
