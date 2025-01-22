@@ -2,5 +2,6 @@
 .vs
 build
 vendor/lua/
+vendor/imgui/
 /project
 engine.log
