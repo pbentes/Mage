@@ -30,7 +30,10 @@ target_include_directories( ${ProjectName}
     PUBLIC ${efsw_SOURCE_DIR}/include
     PUBLIC ${sqlite3_SOURCE_DIR}
     PUBLIC ${JoltPhysics_SOURCE_DIR}/..
+    PUBLIC ${imgui_SOURCE_DIR}
+    PUBLIC ${imgui_SOURCE_DIR}/backends
     PUBLIC ${engine_SOURCE_DIR}/src
+    PUBLIC ${toml11_SOURCE_DIR}
 )
 
 target_link_libraries(${ProjectName}
