@@ -6,8 +6,6 @@
 #include <iostream>
 #include <map>
 
-#include <imgui.h>
-
 #include <toml.hpp>
 #include <toml/get.hpp>
 #include <toml/parser.hpp>
