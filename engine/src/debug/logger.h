@@ -25,10 +25,13 @@
     #define INFO(...)
 #endif
 
+void create_logger(const char* file_path);
+std::ofstream* get_current_logger();
+void close_logger();
+
 template<typename... Args>
 void Log(const char* mode, Args&&... args) {
-    std::ofstream m_OutputStream;
-    m_OutputStream.open("engine.log", std::fstream::app);
+    std::ofstream* log = get_current_logger();
 
     std::ostringstream oss;
 
@@ -41,12 +44,13 @@ void Log(const char* mode, Args&&... args) {
     oss << "[" << mode << "] ";
     (oss << ... << std::forward<Args>(args)) << std::endl;
 
-    m_OutputStream << oss.str();
 #ifdef LOGGER_OUTPUT_COUT
-    std::cout      << oss.str();
+    std::cout << oss.str();
 #endif
-    m_OutputStream.flush();
-    m_OutputStream.close();
+    if (log->is_open()) {
+        *log << oss.str();
+        log->flush();
+    }
 }
 
 template<typename... Args>
