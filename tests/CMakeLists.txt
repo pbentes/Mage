@@ -6,6 +6,13 @@ project(${ProjectName})
 
 link_directories(
     ${engine_BINARY_DIR}
+    ${enet_BINARY_DIR}
+    ${flecs_BINARY_DIR}
+    ${lua_BINARY_DIR}
+    ${efsw_BINARY_DIR}
+    ${sqlite3_BINARY_DIR}
+    ${glfw3_BINARY_DIR}/src
+    ${imgui_BINARY_DIR}
 )
 
 file(GLOB_RECURSE TEST_SRC

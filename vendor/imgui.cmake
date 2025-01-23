@@ -14,7 +14,7 @@ cmake_minimum_required(VERSION 3.11)
 project(imgui)
 
 link_directories(
-    "${CMAKE_SOURCE_DIR}/build/_deps/glfw3-build/src/Debug"
+    ${glfw3_BINARY_DIR}/src
 )
 
 file(GLOB_RECURSE IMGUI_SRC
@@ -48,7 +48,7 @@ target_include_directories(imgui
 )
 
 target_link_libraries(imgui
-    PUBLIC glfw3dll
+    PUBLIC glfw3
 )
 ]])
 

@@ -11,6 +11,8 @@ link_directories(
     ${lua_BINARY_DIR}
     ${efsw_BINARY_DIR}
     ${sqlite3_BINARY_DIR}
+    ${glfw3_BINARY_DIR}/src
+    ${imgui_BINARY_DIR}
 )
 
 file(GLOB_RECURSE ENGINE_SRC
@@ -19,8 +21,6 @@ file(GLOB_RECURSE ENGINE_SRC
 )
 
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
-
-add_dependencies(${ProjectName} enet lua Jolt)
 
 target_include_directories( ${ProjectName}
     PUBLIC ${enet_SOURCE_DIR}/include
@@ -32,6 +32,7 @@ target_include_directories( ${ProjectName}
     PUBLIC ${JoltPhysics_SOURCE_DIR}/..
     PUBLIC ${imgui_SOURCE_DIR}
     PUBLIC ${imgui_SOURCE_DIR}/backends
+    PUBLIC ${glfw_SOURCE_DIR}/include
     PUBLIC ${engine_SOURCE_DIR}/src
     PUBLIC ${toml11_SOURCE_DIR}
 )
@@ -41,5 +42,7 @@ target_link_libraries(${ProjectName}
     PUBLIC lua
     PUBLIC efsw
     PUBLIC sqlite3
+    PUBLIC glfw3
+    PUBLIC imgui
     PUBLIC Jolt
 )

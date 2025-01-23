@@ -7,6 +7,13 @@ set(CMAKE_DEBUG_POSTFIX "")
 
 link_directories(
     ${engine_BINARY_DIR}
+    ${enet_BINARY_DIR}
+    ${flecs_BINARY_DIR}
+    ${lua_BINARY_DIR}
+    ${efsw_BINARY_DIR}
+    ${sqlite3_BINARY_DIR}
+    ${glfw3_BINARY_DIR}/src
+    ${imgui_BINARY_DIR}
 )
 
 file(GLOB_RECURSE RUNTIME_SRC
@@ -19,9 +26,7 @@ add_executable(${ProjectName} ${RUNTIME_SRC})
 add_dependencies(${ProjectName} engine)
 
 target_include_directories( ${ProjectName}
-    PRIVATE ${enet_SOURCE_DIR}/include
-    PRIVATE ${entt_SRC}/single_include
-    PRIVATE ${engine_SOURCE_DIR}/src
+    PUBLIC ${engine_SOURCE_DIR}/src
 )
 
 target_link_libraries(${ProjectName}
