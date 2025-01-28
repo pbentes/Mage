@@ -1,4 +1,4 @@
-#include "logger.h"
+#include "logger.hpp"
 
 std::ofstream current_log_file;
 

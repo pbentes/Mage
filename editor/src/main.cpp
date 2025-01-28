@@ -1,5 +1,5 @@
-#include <core/uuid.h>
-#include <debug/logger.h>
+#include <core/uuid.hpp>
+#include <debug/logger.hpp>
 
 int main() {
     INFO(create_uuid64());
