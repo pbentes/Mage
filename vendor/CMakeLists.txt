@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 include(FetchContent)
 
+include(arena.cmake)
 include(glad.cmake)
 include(glfw3.cmake)
 include(glm.cmake)

@@ -23,6 +23,7 @@ file(GLOB_RECURSE ENGINE_SRC
 add_library(${ProjectName} STATIC ${ENGINE_SRC})
 
 target_include_directories( ${ProjectName}
+    PUBLIC ${arena_SOURCE_DIR}
     PUBLIC ${enet_SOURCE_DIR}/include
     PUBLIC ${entt_SRC}/single_include
     PUBLIC ${lua_SOURCE_DIR}
