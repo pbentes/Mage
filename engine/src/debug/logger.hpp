@@ -8,19 +8,19 @@
 #define LOGGER_OUTPUT_COUT
 
 #ifndef DO_NOT_OUTPUT_ERRORS
-    #define ERROR(...) Error(__VA_ARGS__)
+    #define ERROR(...) Error(__FILE__, ":", __LINE__, " ", __VA_ARGS__)
 #else 
     #define ERROR(...)
 #endif
 
 #ifndef DO_NOT_OUTPUT_DEBUG
-    #define DEBUG(...) Debug(__VA_ARGS__)
+    #define DEBUG(...) Debug(__FILE__, ":", __LINE__, " ", __VA_ARGS__)
 #else
     #define DEBUG(...)
 #endif
 
 #ifndef DO_NOT_OUTPUT_INFO
-    #define INFO(...)  Info(__VA_ARGS__)
+    #define INFO(...)  Info(__FILE__, ":", __LINE__, " ", __VA_ARGS__)
 #else
     #define INFO(...)
 #endif
@@ -37,7 +37,7 @@ void Log(const char* mode, Args&&... args) {
 
     auto now = std::chrono::system_clock::now();
     std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
-    struct tm now_tm;
+    struct tm now_tm = {};
     localtime_s(&now_tm, &now_time_t);
 
     oss << "[" << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S") << "] ";
