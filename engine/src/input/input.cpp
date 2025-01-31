@@ -15,6 +15,18 @@ void initialize(InputAPI input_api) {
     api = input_api;
 }
 
+void input_update() {
+    for(int i = 0; i < MAP_BUCKETS; i++) {
+        if(action_map->buckets[i].key == nullptr)
+            continue;
+        
+        MapElement* element = &action_map->buckets[i];
+        do {
+            api.update((Action*)element->value);
+        } while(element->next != nullptr);
+    }
+}
+
 void shutdown() {
     if(action_map == nullptr) {
         ERROR("Input system has not been initialized.");
