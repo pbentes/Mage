@@ -12,6 +12,8 @@ link_directories(
     ${efsw_BINARY_DIR}
     ${sqlite3_BINARY_DIR}
     ${glfw3_BINARY_DIR}/src
+    ${glm_BINARY_DIR}/glm
+    ${glad_BINARY_DIR}
     ${imgui_BINARY_DIR}
 )
 
@@ -34,6 +36,8 @@ target_include_directories( ${ProjectName}
     PUBLIC ${imgui_SOURCE_DIR}
     PUBLIC ${imgui_SOURCE_DIR}/backends
     PUBLIC ${glfw_SOURCE_DIR}/include
+    PUBLIC ${glad_BINARY_DIR}/gladsources/glad/include
+    PUBLIC ${glm_SOURCE_DIR}
     PUBLIC ${engine_SOURCE_DIR}/src
     PUBLIC ${toml11_SOURCE_DIR}
 )
@@ -43,6 +47,8 @@ target_link_libraries(${ProjectName}
     PUBLIC lua
     PUBLIC efsw
     PUBLIC sqlite3
+    PUBLIC glad
+    PUBLIC glm
     PUBLIC glfw3
     PUBLIC imgui
     PUBLIC Jolt
