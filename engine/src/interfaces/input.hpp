@@ -220,7 +220,7 @@ typedef struct Action {
 } Action;
 
 typedef struct InputAPI {
-    void (*update)(Action*, int);
+    void (*update)(Action*);
 } InputAPI;
 
 void initialize(InputAPI input_api);
