@@ -3,5 +3,6 @@
 build
 vendor/lua/
 vendor/imgui/
+vendor/shaderc/
 /project
 engine.log
