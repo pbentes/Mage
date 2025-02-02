@@ -211,16 +211,16 @@
 #define GAMEPAD_AXIS_LAST          GAMEPAD_AXIS_RIGHT_TRIGGER
 
 typedef struct Action {
-    const char* name;
-    int binding;
-    unsigned int modifiers;
-    bool is_pressed;
-    bool just_pressed;
-    bool just_released;
+    const char* name = nullptr;
+    int binding = KEY_UNKNOWN;
+    unsigned int modifiers = 0;
+    bool is_pressed = false;
+    bool just_pressed = false;
+    bool just_released = false;
 } Action;
 
 typedef struct InputAPI {
-    void (*update)(Action*);
+    void (*update)(Action*) = nullptr;
 } InputAPI;
 
 void initialize(InputAPI input_api);
