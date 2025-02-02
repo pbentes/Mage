@@ -7,3 +7,6 @@ FetchContent_Declare(
   GIT_TAG "main"
 )
 FetchContent_MakeAvailable(spirvcross)
+
+set(spirvcross_SOURCE_DIR ${spirvcross_SOURCE_DIR} PARENT_SCOPE)
+set(spirvcross_BINARY_DIR ${spirvcross_BINARY_DIR} PARENT_SCOPE)

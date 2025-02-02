@@ -6,7 +6,9 @@ project("mage")
 
 set(CMAKE_FOLDER Dependencies)
 add_subdirectory("vendor")
-
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 set(CMAKE_FOLDER /)
 add_subdirectory("engine")
 add_subdirectory("runtime")

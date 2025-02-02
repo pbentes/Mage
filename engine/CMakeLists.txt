@@ -5,6 +5,8 @@ project(${ProjectName})
 
 set(CMAKE_DEBUG_POSTFIX "")
 
+message(${spirvcross_BINARY_DIR})
+
 link_directories(
     ${enet_BINARY_DIR}
     ${flecs_BINARY_DIR}
@@ -14,6 +16,8 @@ link_directories(
     ${glfw3_BINARY_DIR}/src
     ${glm_BINARY_DIR}/glm
     ${glad_BINARY_DIR}
+    ${shaderc_BINARY_DIR}/libshaderc
+    ${spirvcross_BINARY_DIR}
     ${imgui_BINARY_DIR}
 )
 
@@ -38,6 +42,8 @@ target_include_directories( ${ProjectName}
     PUBLIC ${glfw_SOURCE_DIR}/include
     PUBLIC ${glad_BINARY_DIR}/gladsources/glad/include
     PUBLIC ${glm_SOURCE_DIR}
+    PUBLIC ${shaderc_SOURCE_DIR}/libshaderc/include
+    PUBLIC ${spirvcross_SOURCE_DIR}/include
     PUBLIC ${engine_SOURCE_DIR}/src
     PUBLIC ${toml11_SOURCE_DIR}
 )
@@ -50,6 +56,10 @@ target_link_libraries(${ProjectName}
     PUBLIC glad
     PUBLIC glm
     PUBLIC glfw3
+    PUBLIC shaderc
     PUBLIC imgui
     PUBLIC Jolt
+    PUBLIC spirv-cross-core
+    PUBLIC spirv-cross-glsl
+    PUBLIC spirv-cross-reflect
 )

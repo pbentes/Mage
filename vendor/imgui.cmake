@@ -52,4 +52,7 @@ target_link_libraries(imgui
 )
 ]])
 
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/imgui)

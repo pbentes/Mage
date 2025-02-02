@@ -40,6 +40,7 @@ set(USE_FMADD ON)
 if (MSVC)
 	# Set runtime library
 	set(USE_STATIC_MSVC_RUNTIME_LIBRARY OFF)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 # Include Jolt

@@ -8,9 +8,11 @@ FetchContent_Declare(
     GIT_TAG        glad2
     GIT_PROGRESS   TRUE
 )
-
 FetchContent_Populate(glad_src)
 
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 add_subdirectory("${glad_src_SOURCE_DIR}/cmake" glad_cmake)
 
 glad_add_library(glad REPRODUCIBLE LOADER API gl:core=3.3)

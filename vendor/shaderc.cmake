@@ -37,4 +37,7 @@ FetchContent_Populate(glslang)
 
 add_definitions(-DSHADERC_SKIP_TESTS=true)
 set(SHADERC_SKIP_TESTS true)
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 add_subdirectory(${shaderc_root_dir})
