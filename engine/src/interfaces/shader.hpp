@@ -23,7 +23,7 @@ void shader_compile(shader* s); // Compile sources to SPIRV Binary modules
 void shader_save_bin(shader* s, char* destination);
 
 typedef struct ShaderAPI {
-    void (*compile)(shader* shader) = nullptr; // Compile SPIRV binary modules to the apropriate format for the graphics API using SPIRV Cross
+    void (*compile)(shader* shader) = nullptr; // Compile SPIRV binary modules source code using SPIRV Cross
     void (*use)(shader* shader) = nullptr;
     void (*cleanup)(shader* shader) = nullptr;
 
