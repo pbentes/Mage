@@ -27,7 +27,7 @@ if(<condition>) {
 
 ### 4. Line Length
 
-- Limit lines to 80 characters to enhance readability.
+- Line length is to be limited to 100 characters as a soft limit and 120 as a hard limit to enhance readability.
 
 ### 5. Comments
 
@@ -66,5 +66,6 @@ int result = compute_value(); // Calculate the initial value
 
 ### 10. Avoid Dangerous Constructs
 
-- Refrain from using C-style casts; instead use C++-style casts (`static_cast`, `dynamic_cast`, `const_cast`, `reinterpret_cast`).
+- Refrain from using C-style casts; instead use C++-style casts (`static_cast`, `dynamic_cast`, 
+`const_cast`, `reinterpret_cast`).
 - Avoid macros when inline functions or `constexpr` can achieve the same functionality.
