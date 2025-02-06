@@ -62,7 +62,7 @@ int result = compute_value(); // Calculate the initial value
 
 ### 9. Standard Library Usage
 
-- Utilize the C++ Standard Library (`<algorithm>`, `<vector>`m etc.) to promote code efficiency and clarity.
+- Utilize the C++ Standard Library (`<algorithm>`, `<vector>`, etc.) to promote code efficiency and clarity.
 
 ### 10. Avoid Dangerous Constructs
 
