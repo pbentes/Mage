@@ -174,7 +174,7 @@ void set_theme(theme* new_theme) {
     style.GrabRounding              = new_theme->m_GrabRounding;
     style.TabRounding               = new_theme->m_TabRounding;
     style.TabBorderSize             = new_theme->m_TabBorderSize;
-    style.TabMinWidthForCloseButton = new_theme->m_TabMinWidthForCloseButton;
+    //style.TabMinWidthForCloseButton = new_theme->m_TabMinWidthForCloseButton;
     style.ColorButtonPosition       = new_theme->m_ColorButtonPosition;
     style.ButtonTextAlign           = new_theme->m_ButtonTextAlign;
     style.SelectableTextAlign       = new_theme->m_SelectableTextAlign;

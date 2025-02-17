@@ -2,20 +2,26 @@
 
 #include <cstdint>
 
-typedef struct uuid64 {
-    uint64_t uuid;
+class Uuid64 {
+    public:
+        Uuid64();
 
-    operator uint64_t () { return uuid; }
-    operator const uint64_t () const { return uuid; }
-} uuid64;
+    private:
+        uint64_t uuid;
 
-uuid64 create_uuid64();
+    public:
+        operator uint64_t () { return uuid; }
+        operator const uint64_t () const { return uuid; }
+};
 
-typedef struct uuid32 {
-    uint32_t uuid;
+class Uuid32 {
+    public:
+        Uuid32();
 
-    operator uint32_t () { return uuid; }
-    operator const uint32_t () const { return uuid; }
-} uuid32;
+    private:
+        uint32_t uuid;
 
-uuid32 create_uuid32();
+    public:
+        operator uint32_t () { return uuid; }
+        operator const uint32_t () const { return uuid; }
+};
