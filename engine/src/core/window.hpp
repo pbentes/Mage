@@ -24,10 +24,10 @@ class Window {
 class WindowInterface {
     public:
         virtual std::shared_ptr<void> create_window(std::string title, int width, int height) = 0;
-        virtual void close_window(std::shared_ptr<Window> window) = 0;
-        virtual void poll_events(std::shared_ptr<Window> window) = 0;
-        virtual void swap_buffers(std::shared_ptr<Window> window) = 0;
-        virtual bool should_close(std::shared_ptr<Window> window) = 0;
+        virtual void close_window(Window* window) = 0;
+        virtual void poll_events(Window* window) = 0;
+        virtual void swap_buffers(Window* window) = 0;
+        virtual bool should_close(Window* window) = 0;
 };
 
 void use_window_interface(WindowInterface* window_interface);

@@ -11,18 +11,17 @@
 
 class Platform {
     public:
-        Platform() = default;\
+        Platform() = default;
         Platform(const Platform& platform) = delete;
         static Platform* getInstance();
 
     public:
-        std::shared_ptr<ApplicationInterface> application_interface;
-        std::shared_ptr<WindowInterface> window_interface;
-        std::shared_ptr<InputInterface> input_interface;
-        std::shared_ptr<RendererInterface> renderer_interface;
-        std::shared_ptr<ShaderInterface> shader_interface;
+        ApplicationInterface* application_interface;
+        WindowInterface* window_interface;
+        InputInterface* input_interface;
+        RendererInterface* renderer_interface;
+        ShaderInterface* shader_interface;
     
     private:
         static Platform* instancePtr;
-        static std::mutex mtx;
 };
