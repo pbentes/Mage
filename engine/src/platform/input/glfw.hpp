@@ -1,5 +1,8 @@
 #pragma once
 
-class GlfwInputApi {
+#include "input/input.hpp"
 
+class GlfwInputApi: InputInterface {
+    public:
+        void update(Action* action) override;
 };
