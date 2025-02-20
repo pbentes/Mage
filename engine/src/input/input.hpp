@@ -3,6 +3,7 @@
 #include "core/window.hpp"
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #define KEY_UNKNOWN            -1
@@ -218,7 +219,6 @@ class Action {
         Action(std::string name, int binding, unsigned int modifiers);
     
     public:
-        std::string name;
         int binding = KEY_UNKNOWN;
         unsigned int modifiers = 0;
         bool is_pressed = false;
@@ -231,10 +231,11 @@ class Input {
         Input() = default;
         Input(const Input& platform) = delete;
         static Input* getInstance();
-
+        
+        Action* action(std::string action_name);
         void update();
     public:
-        std::vector<Action*> actions;
+        std::unordered_map<std::string, Action*> actions;
         Window* window;
     private:
         static Input* instancePtr;

@@ -35,15 +35,16 @@ int main() {
 
     opengl_api.load();
 
-    Action action("", KEY_SPACE, 0);
-    Input::getInstance()->window = &window;
+    Action action("test", KEY_SPACE, 0);
+    Input* input = Input::getInstance();
+    input->window = &window;
 
     while(!window.should_close()) {
         Input::getInstance()->update();
 
         opengl_api.clear(glm::vec4 {0.0588f, 0.0588f, 0.0588f, 1.0f});
         
-        if(action.just_pressed)
+        if(input->action("test")->just_pressed)
             INFO("Hello input");
 
         window.swap_buffers();

@@ -2,11 +2,10 @@
 #include "platform/platform.hpp"
 
 Action::Action(std::string name, int binding, unsigned int modifiers) {
-    this->name = name;
     this->binding = binding;
     this->modifiers = modifiers;
 
-    Input::getInstance()->actions.push_back(this);
+    Input::getInstance()->actions[name] = this;
 }
 
 Input* Input::instancePtr = nullptr;
@@ -20,9 +19,13 @@ Input* Input::getInstance() {
     return instancePtr;
 }
 
+Action* Input::action(std::string action_name) {
+    return actions[action_name];
+}
+
 void Input::update() {
     Platform* platform = Platform::getInstance();
-    for(int i = 0; i < actions.size(); i++) {
-        platform->input_interface->update(actions[i]);
+    for(auto& action: actions) {
+        platform->input_interface->update(action.second);
     }
 }
