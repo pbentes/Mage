@@ -2,6 +2,7 @@
 
 #include "../platform.hpp"
 #include "debug/logger.hpp"
+#include "glm/fwd.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -29,7 +30,9 @@ unsigned int glfw_get_modifiers(GLFWwindow* window) {
 }
 
 void GlfwInputApi::update(Action* action) {
-    void* window_handle = Input::getInstance()->window->get_window_handle().get();
+    Input* input = Input::getInstance();
+
+    void* window_handle = input->window->get_window_handle().get();
     GLFWwindow* window = reinterpret_cast<GLFWwindow*>(window_handle);
     unsigned int current_mods = glfw_get_modifiers(window);
 
@@ -41,5 +44,12 @@ void GlfwInputApi::update(Action* action) {
         action->is_pressed = false;
     }
 
-    //INFO(action->name, " | ", action->binding, " | ", action->is_pressed);
+
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+
+    
+
+    input->mouse_delta = glm::vec2{ input->mouse_position.x - xpos, input->mouse_position.y - ypos };
+    input->mouse_position = glm::vec2{ xpos, ypos };
 }

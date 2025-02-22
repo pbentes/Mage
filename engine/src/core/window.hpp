@@ -3,6 +3,13 @@
 #include <memory>
 #include <string>
 
+enum CursorMode {
+    Disabled,
+    Hidden,
+    Captured,
+    Normal,
+};
+
 class Window {
     public:
         Window(std::string title, int width, int height);
@@ -14,6 +21,7 @@ class Window {
         void poll_events();
         void swap_buffers();
         bool should_close();
+        void set_cursor_mode(CursorMode cursor_mode);
 
         std::shared_ptr<void> get_window_handle();
 
@@ -28,6 +36,7 @@ class WindowInterface {
         virtual void poll_events(Window* window) = 0;
         virtual void swap_buffers(Window* window) = 0;
         virtual bool should_close(Window* window) = 0;
+        virtual void set_cursor_mode(Window* window, CursorMode cursor_mode) = 0;
 };
 
 void use_window_interface(WindowInterface* window_interface);

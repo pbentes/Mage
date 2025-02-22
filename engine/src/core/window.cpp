@@ -37,3 +37,8 @@ bool Window::should_close() {
 std::shared_ptr<void> Window::get_window_handle() {
     return this->window_handle;
 }
+
+void Window::set_cursor_mode(CursorMode cursor_mode) {
+    Platform* platform = Platform::getInstance();
+    platform->window_interface->set_cursor_mode(this, cursor_mode);
+}

@@ -2,9 +2,11 @@
 
 #include "core/window.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/vec2.hpp"
+
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 #define KEY_UNKNOWN            -1
 
@@ -236,6 +238,8 @@ class Input {
         void update();
     public:
         std::unordered_map<std::string, Action*> actions;
+        glm::ivec2 mouse_position;
+        glm::ivec2 mouse_delta;
         Window* window;
     private:
         static Input* instancePtr;

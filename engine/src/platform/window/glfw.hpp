@@ -9,4 +9,5 @@ class GlfwWindowApi: WindowInterface {
         void poll_events(Window* window) override;
         void swap_buffers(Window* window) override;
         bool should_close(Window* window) override;
+        void set_cursor_mode(Window* window, CursorMode cursor_mode) override;
 };

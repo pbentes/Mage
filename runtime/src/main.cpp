@@ -36,6 +36,7 @@ int main() {
     opengl_api.load();
 
     Action action("test", KEY_SPACE, 0);
+    Action quit_action("quit", KEY_ESCAPE, 0);
     Input* input = Input::getInstance();
     input->window = &window;
 
@@ -44,8 +45,13 @@ int main() {
 
         opengl_api.clear(glm::vec4 {0.0588f, 0.0588f, 0.0588f, 1.0f});
         
-        if(input->action("test")->just_pressed)
-            INFO("Hello input");
+        if(input->action("test")->just_pressed) {
+            window.set_cursor_mode(CursorMode::Disabled);
+        }
+
+        if(input->action("quit")->just_pressed) {
+            window.close();
+        }
 
         window.swap_buffers();
         window.poll_events();

@@ -6,9 +6,6 @@
 #include "../renderer/renderer.hpp"
 #include "../renderer/shader.hpp"
 
-#include <memory>
-#include <mutex>
-
 class Platform {
     public:
         Platform() = default;
