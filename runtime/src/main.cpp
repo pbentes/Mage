@@ -1,7 +1,6 @@
-#include "input/input.hpp"
-#include "platform/input/glfw.hpp"
-#include "renderer/renderer.hpp"
-
+#include <input/input.hpp>
+#include <platform/input/glfw.hpp>
+#include <renderer/renderer.hpp>
 #include <core/uuid.hpp>
 #include <core/window.hpp>
 #include <debug/logger.hpp>
