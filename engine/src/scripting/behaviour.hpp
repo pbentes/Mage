@@ -1,6 +1,10 @@
 #pragma once
 
-class Behaviour {
+#include <scene/components.hpp>
+
+class Entity;
+
+class Behaviour: Component {
     public:
         Behaviour();
         ~Behaviour();
@@ -10,4 +14,6 @@ class Behaviour {
         virtual void update(float delta) = 0;
         virtual void late_update(float delta) = 0;
         virtual void exit() = 0;
+    private:
+        Entity* entity;
 };
