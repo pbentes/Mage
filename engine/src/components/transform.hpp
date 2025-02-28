@@ -1,12 +1,13 @@
 #pragma once
 
-#include <scene/components.hpp>
+#include "../core/serializable.hpp"
+#include "../scene/components.hpp"
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
 
-class Transform: Component {
+class Transform: Serializable, Component {
     public:
         glm::vec3 position = glm::vec3{0, 0, 0};
         glm::vec3 scale = glm::vec3{1, 1, 1};

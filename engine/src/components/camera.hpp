@@ -1,15 +1,16 @@
 #pragma once
 
-#include <scene/components.hpp>
+#include "../core/serializable.hpp"
+#include "../scene/components.hpp"
 
 #include "glm/ext/matrix_float4x4.hpp"
 
 enum Projection {
-    perspective,
-    orthographic,
+    perspective = 0,
+    orthographic = 1,
 };
 
-class Camera: Component {
+class Camera: Serializable, Component {
     public:
         glm::mat4 project();
     public:
