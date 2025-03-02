@@ -1,6 +1,7 @@
 #include "glfw.hpp"
 
 #include "../../debug/logger.hpp"
+#include "core/window.hpp"
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -47,6 +48,36 @@ void GlfwWindowApi::swap_buffers(Window* window) {
 bool GlfwWindowApi::should_close(Window* window) {
     GLFWwindow* glfw_window = std::static_pointer_cast<GLFWwindow>(window->get_window_handle()).get();
     return glfwWindowShouldClose(glfw_window);
+}
+
+bool GlfwWindowApi::is_fullscreen(Window* window) {
+    GLFWwindow* glfw_window = std::static_pointer_cast<GLFWwindow>(window->get_window_handle()).get();
+    return !(glfwGetWindowMonitor(glfw_window) == NULL);
+}
+
+void GlfwWindowApi::fullscreen(Window* window) {
+    GLFWwindow* glfw_window = std::static_pointer_cast<GLFWwindow>(window->get_window_handle()).get();
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    glfwSetWindowMonitor(glfw_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+}
+
+void GlfwWindowApi::fullscreen_windowed(Window* window) {
+    GLFWwindow* glfw_window = std::static_pointer_cast<GLFWwindow>(window->get_window_handle()).get();
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    glfwSetWindowMonitor(glfw_window, NULL, 0, 0, mode->width, mode->height, mode->refreshRate);
+    glfwSetWindowAttrib(glfw_window, GLFW_DECORATED, GLFW_FALSE);
+}
+
+void GlfwWindowApi::windowed(Window* window) {
+    GLFWwindow* glfw_window = std::static_pointer_cast<GLFWwindow>(window->get_window_handle()).get();
+    glfwRestoreWindow(glfw_window);
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    glfwSetWindowMonitor(glfw_window, NULL, 0, 0, mode->width, mode->height, mode->refreshRate);
+    glfwSetWindowAttrib(glfw_window, GLFW_DECORATED, GLFW_TRUE);
+    glfwMaximizeWindow(glfw_window);
 }
 
 void GlfwWindowApi::set_cursor_mode(Window* window, CursorMode cursor_mode) {

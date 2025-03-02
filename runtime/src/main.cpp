@@ -57,13 +57,19 @@ int main(int argc, char* argv[]) {
         FilesystemWatcher watcher(std::vector<std::string> { project_path });
     }
 
+    window.fullscreen();
+
     while(!window.should_close()) {
         Input::getInstance()->update();
 
         opengl_api.clear(glm::vec4 {0.0588f, 0.0588f, 0.0588f, 1.0f});
 
         if(input->action("fullscreen")->just_pressed) {
-            INFO("Toggle maximize window???");
+            if(!window.is_fullscreen()) {
+                window.fullscreen();
+            } else {
+                window.windowed();
+            }
         }
 
         if(input->action("quit")->just_pressed) {

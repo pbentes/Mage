@@ -34,6 +34,26 @@ bool Window::should_close() {
     return platform->window_interface->should_close(this);
 }
 
+bool Window::is_fullscreen() {
+    Platform* platform = Platform::getInstance();
+    return platform->window_interface->is_fullscreen(this);
+}
+
+void Window::fullscreen() {
+    Platform* platform = Platform::getInstance();
+    platform->window_interface->fullscreen(this);
+}
+
+void Window::fullscreen_windowed() {
+    Platform* platform = Platform::getInstance();
+    platform->window_interface->fullscreen_windowed(this);
+}
+
+void Window::windowed() {
+    Platform* platform = Platform::getInstance();
+    platform->window_interface->windowed(this);
+}
+
 std::shared_ptr<void> Window::get_window_handle() {
     return this->window_handle;
 }

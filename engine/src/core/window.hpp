@@ -21,6 +21,10 @@ class Window {
         void poll_events();
         void swap_buffers();
         bool should_close();
+        bool is_fullscreen();
+        void fullscreen();
+        void fullscreen_windowed();
+        void windowed();
         void set_cursor_mode(CursorMode cursor_mode);
 
         std::shared_ptr<void> get_window_handle();
@@ -36,6 +40,10 @@ class WindowInterface {
         virtual void poll_events(Window* window) = 0;
         virtual void swap_buffers(Window* window) = 0;
         virtual bool should_close(Window* window) = 0;
+        virtual bool is_fullscreen(Window* window) = 0;
+        virtual void fullscreen(Window* window) = 0;
+        virtual void fullscreen_windowed(Window* window) = 0;
+        virtual void windowed(Window* window) = 0;
         virtual void set_cursor_mode(Window* window, CursorMode cursor_mode) = 0;
 };
 
