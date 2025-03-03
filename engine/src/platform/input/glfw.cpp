@@ -1,9 +1,6 @@
 #include "glfw.hpp"
 
-#include "../platform.hpp"
-#include "debug/logger.hpp"
-#include "glm/fwd.hpp"
-
+#include <glm/fwd.hpp>
 #include <GLFW/glfw3.h>
 
 unsigned int glfw_get_modifiers(GLFWwindow* window) {
